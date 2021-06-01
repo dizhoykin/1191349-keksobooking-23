@@ -17,7 +17,7 @@ function getRandomFloatInclusive(min, max, decimal) {
   } else if (decimal < 0 || !Number.isInteger(decimal)) {
     throw new Error('Введено неверное число знаков после запятой');
   }
-  return (Math.random() * (max - min) + min).toFixed(decimal);
+  return Number((Math.random() * (max - min) + min).toFixed(decimal));
 }
 
 getRandomFloatInclusive(0, 1, 3);
