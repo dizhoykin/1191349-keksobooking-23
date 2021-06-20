@@ -34,10 +34,10 @@ const createRandomLengthArray = (initialArray) => {
 };
 
 // Функция добавления строчных значений в параметры объявления
-const addFeatureValue = (element, className, value) => {
+const addOfferFeatureValue = (element, className, value) => {
   const featureValue = element.querySelector(className);
   featureValue.innerHTML = '';
   featureValue.textContent = value;
 };
 
-export {getRandomIntInclusive, getRandomFloatInclusive, getRandomArrayElement, createRandomLengthArray, addFeatureValue};
+export {getRandomIntInclusive, getRandomFloatInclusive, getRandomArrayElement, createRandomLengthArray, addOfferFeatureValue};

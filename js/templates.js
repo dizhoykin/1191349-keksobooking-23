@@ -1,5 +1,5 @@
 import {createAdsArray} from './data.js';
-import {addFeatureValue} from './utils.js';
+import {addOfferFeatureValue} from './utils.js';
 
 const ADS_NUMBER = 1;
 
@@ -16,13 +16,13 @@ const adsListFragment = document.createDocumentFragment();
 adsList.forEach((adsObject) => {
   const adsListElement = adsListElementTemplate.cloneNode(true);
 
-  addFeatureValue(adsListElement, '.popup__title', adsObject.ad.offer.title);
-  addFeatureValue(adsListElement, '.popup__text--address', adsObject.ad.offer.address);
-  addFeatureValue(adsListElement, '.popup__text--price', `${adsObject.ad.offer.price} ₽/ночь`);
-  addFeatureValue(adsListElement, '.popup__type', Object.values(adsObject.ad.offer.type));
-  addFeatureValue(adsListElement, '.popup__text--capacity', `${adsObject.ad.offer.rooms} комнаты для ${adsObject.ad.offer.guests} гостей`);
-  addFeatureValue(adsListElement, '.popup__text--time', `Заезд после ${adsObject.ad.offer.checkin}, выезд до ${adsObject.ad.offer.checkout}`);
-  addFeatureValue(adsListElement, '.popup__description', adsObject.ad.offer.description);
+  addOfferFeatureValue(adsListElement, '.popup__title', adsObject.ad.offer.title);
+  addOfferFeatureValue(adsListElement, '.popup__text--address', adsObject.ad.offer.address);
+  addOfferFeatureValue(adsListElement, '.popup__text--price', `${adsObject.ad.offer.price} ₽/ночь`);
+  addOfferFeatureValue(adsListElement, '.popup__type', Object.values(adsObject.ad.offer.type));
+  addOfferFeatureValue(adsListElement, '.popup__text--capacity', `${adsObject.ad.offer.rooms} комнаты для ${adsObject.ad.offer.guests} гостей`);
+  addOfferFeatureValue(adsListElement, '.popup__text--time', `Заезд после ${adsObject.ad.offer.checkin}, выезд до ${adsObject.ad.offer.checkout}`);
+  addOfferFeatureValue(adsListElement, '.popup__description', adsObject.ad.offer.description);
 
   const featuresList = adsListElement.querySelector('.popup__features');
   featuresList.innerHTML = '';
