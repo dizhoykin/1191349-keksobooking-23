@@ -33,11 +33,22 @@ const createRandomLengthArray = (initialArray) => {
   return uniqueАrray;
 };
 
-// Функция добавления строчных значений в параметры объявления
-const addFeatureValue = (element, className, value) => {
+// Функция добавления значений в параметры объявления
+const addOfferFeatureValue = (element, className, value) => {
   const featureValue = element.querySelector(className);
-  featureValue.innerHTML = '';
-  featureValue.textContent = value;
+  if (value) {
+    featureValue.textContent = value;
+  }
+  else {
+    featureValue.classList.add('hidden');
+  }
 };
 
-export {getRandomIntInclusive, getRandomFloatInclusive, getRandomArrayElement, createRandomLengthArray, addFeatureValue};
+const disableFormElement = (tagName, parentForm) => {
+  const allTagsByName = parentForm.querySelectorAll(tagName);
+  for (tagName of allTagsByName) {
+    tagName.setAttribute('disabled','');
+  }
+};
+
+export {getRandomIntInclusive, getRandomFloatInclusive, getRandomArrayElement, createRandomLengthArray, addOfferFeatureValue, disableFormElement};
