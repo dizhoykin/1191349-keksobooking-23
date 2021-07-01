@@ -4,8 +4,9 @@ import {disableFormElement, validateRoomsAndGuests} from './utils.js';
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
 
+const adForm = document.querySelector('.ad-form');
+
 const disableForms = () => {
-  const adForm = document.querySelector('.ad-form');
   adForm.classList.add('ad-form--disabled');
 
   disableFormElement('input', adForm);
@@ -17,7 +18,7 @@ const disableForms = () => {
 disableForms();
 
 const enableForms = () => {
-  const adForm = document.querySelector('.ad-form');
+
   adForm.classList.remove('ad-form--disabled');
   const disabledElements = adForm.querySelectorAll('[disabled]');
   for (const disabledElement of disabledElements) {
@@ -26,8 +27,6 @@ const enableForms = () => {
 };
 
 enableForms();
-
-const adForm = document.querySelector('.ad-form');
 
 // Валидация поля ввода заголовка объявления
 
