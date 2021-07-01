@@ -44,6 +44,7 @@ const addOfferFeatureValue = (element, className, value) => {
   }
 };
 
+// Функция выключения элемента DOM
 const disableFormElement = (tagName, parentForm) => {
   const allTagsByName = parentForm.querySelectorAll(tagName);
   for (tagName of allTagsByName) {
@@ -51,4 +52,22 @@ const disableFormElement = (tagName, parentForm) => {
   }
 };
 
-export {getRandomIntInclusive, getRandomFloatInclusive, getRandomArrayElement, createRandomLengthArray, addOfferFeatureValue, disableFormElement};
+const validateRoomsAndGuests = (form, roomNumberInput, capacityInput) => {
+  form.addEventListener('submit', (evt) => {
+    if ((roomNumberInput.value == 1 && capacityInput.value != 1) ||
+      (roomNumberInput.value == 2 && ((capacityInput.value != 1) || (capacityInput.value != 2))) ||
+      (roomNumberInput.value == 100 || capacityInput.value == 0)) {
+        roomNumberInput.setCustomValidity('Выбрано ошибочное число комнат или гостей');
+        capacityInput.setCustomValidity('Выбрано ошибочное число комнат или гостей');
+        // console.log('Выбрано ошибочное число комнат или гостей');
+        evt.preventDefault();
+    }
+    roomNumberInput.setCustomValidity('');
+    capacityInput.setCustomValidity('');
+  });
+};
+
+
+
+
+export {getRandomIntInclusive, getRandomFloatInclusive, getRandomArrayElement, createRandomLengthArray, addOfferFeatureValue, disableFormElement, validateRoomsAndGuests};
