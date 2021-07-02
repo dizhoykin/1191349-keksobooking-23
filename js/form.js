@@ -1,5 +1,5 @@
 
-import {disableFormElement, validateRoomsAndGuests} from './utils.js';
+import {disableFormElement} from './utils.js';
 
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
@@ -80,12 +80,32 @@ priceInput.addEventListener('invalid', () => {
 // Валидация полей ввода количества комнат и количества гостей
 
 const roomNumberInput = document.querySelector('#room_number');
+const typeNumberRoomValue = Number(roomNumberInput.value);
 const capacityInput = document.querySelector('#capacity');
+const typeNumberCapacityValue = Number(capacityInput.value);
 
-roomNumberInput.addEventListener('change', () => {
-  validateRoomsAndGuests(adForm, roomNumberInput, capacityInput);
-});
+const validateRoomsAndGuests = () => {
+  if ((typeNumberRoomValue === 1 && typeNumberCapacityValue !== 1) ||
+    (typeNumberRoomValue === 2 && ((typeNumberCapacityValue !== 1) || (typeNumberCapacityValue !== 2))) ||
+    (typeNumberRoomValue === 100 || typeNumberCapacityValue === 0)) {
+    roomNumberInput.setCustomValidity('Выбрано ошибочное число комнат или гостей');
+    capacityInput.setCustomValidity('Выбрано ошибочное число комнат или гостей');
+    // console.log('Выбрано ошибочное число комнат или гостей');
+    return false;
+  }
+  roomNumberInput.setCustomValidity('');
+  capacityInput.setCustomValidity('');
+};
 
-capacityInput.addEventListener('change', () => {
-  validateRoomsAndGuests(adForm, roomNumberInput, capacityInput);
+adForm.addEventListener('submit', (evt) => {
+  if (validateRoomsAndGuests() === false) {
+    evt.preventDefault();
+  }
+  // roomNumberInput.addEventListener('change', () => {
+  //   checkRoomsAndGuestsMatching();
+  // });
+  //
+  // capacityInput.addEventListener('change', () => {
+  //   checkRoomsAndGuestsMatching();
+  // });
 });

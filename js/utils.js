@@ -52,20 +52,4 @@ const disableFormElement = (tagName, parentForm) => {
   }
 };
 
-const validateRoomsAndGuests = (form, roomNumberInput, capacityInput) => {
-  form.addEventListener('submit', (evt) => {
-    if ((Number(roomNumberInput.value) === 1 && Number(capacityInput.value) !== 1) ||
-      (Number(roomNumberInput.value) === 2 && ((Number(capacityInput.value) !== 1) || (Number(capacityInput.value) !== 2))) ||
-      (Number(roomNumberInput.value) === 100 || Number(capacityInput.value) === 0)) {
-      roomNumberInput.setCustomValidity('Выбрано ошибочное число комнат или гостей');
-      capacityInput.setCustomValidity('Выбрано ошибочное число комнат или гостей');
-      // console.log('Выбрано ошибочное число комнат или гостей');
-      evt.preventDefault();
-    }
-    roomNumberInput.setCustomValidity('');
-    capacityInput.setCustomValidity('');
-  });
-};
-
-
-export {getRandomIntInclusive, getRandomFloatInclusive, getRandomArrayElement, createRandomLengthArray, addOfferFeatureValue, disableFormElement, validateRoomsAndGuests};
+export {getRandomIntInclusive, getRandomFloatInclusive, getRandomArrayElement, createRandomLengthArray, addOfferFeatureValue, disableFormElement};
