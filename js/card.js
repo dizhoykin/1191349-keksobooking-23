@@ -1,11 +1,11 @@
 import {addOfferFeatureValue} from './utils.js';
 
-const showCard = (adsObject) => {
-  const adsListField = document.querySelector('#map-canvas');
-  const adsListElementTemplate =  document.querySelector('#card')
-    .content
-    .querySelector('.popup');
+const adsListField = document.querySelector('#map-canvas');
+const adsListElementTemplate =  document.querySelector('#card')
+  .content
+  .querySelector('.popup');
 
+const showCard = (adsObject) => {
   const adsListElement = adsListElementTemplate.cloneNode(true);
 
   addOfferFeatureValue(adsListElement, '.popup__title', adsObject.ad.offer.title);

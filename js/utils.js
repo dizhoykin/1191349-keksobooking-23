@@ -44,6 +44,7 @@ const addOfferFeatureValue = (element, className, value) => {
   }
 };
 
+// Функция выключения элемента DOM
 const disableFormElement = (tagName, parentForm) => {
   const allTagsByName = parentForm.querySelectorAll(tagName);
   for (tagName of allTagsByName) {
