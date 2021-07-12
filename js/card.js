@@ -1,6 +1,5 @@
 import {addOfferFeatureValue} from './utils.js';
 
-const adsListField = document.querySelector('#map-canvas');
 const adsListElementTemplate =  document.querySelector('#card')
   .content
   .querySelector('.popup');
@@ -57,7 +56,7 @@ const showCard = (adsObject) => {
   else {
     adsAvatar.classList.add('hidden');
   }
-  adsListField.appendChild(adsListElement);
+  return adsListElement;
 };
 
 export {showCard};

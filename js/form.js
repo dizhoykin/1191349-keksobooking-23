@@ -26,7 +26,7 @@ const enableForms = () => {
   }
 };
 
-enableForms();
+// enableForms();
 
 // Валидация поля ввода заголовка объявления
 
@@ -109,3 +109,5 @@ adForm.addEventListener('submit', (evt) => {
     validateRoomsAndGuests();
   });
 });
+
+export {enableForms};
