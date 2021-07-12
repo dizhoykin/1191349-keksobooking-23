@@ -61,9 +61,28 @@ titleInput.addEventListener('input', () => {
   titleInput.reportValidity();
 });
 
-// Валидация поля ввода цены
+// Валидация типа жилья и минимальной стоимости
 
+const typeInput = document.querySelector('#type');
 const priceInput = document.querySelector('#price');
+
+const checkType = (type, value) => {
+  if (typeInput.value === type) {
+    priceInput.placeholder = value;
+    priceInput.setAttribute('min', value);
+  }
+};
+
+typeInput.addEventListener('change', () => {
+  checkType('bungalow', 0);
+  checkType('flat', 1000);
+  checkType('hotel', 3000);
+  checkType('house', 5000);
+  checkType('palace', 10000);
+
+});
+
+// Валидация поля ввода цены
 
 priceInput.addEventListener('invalid', () => {
   if (priceInput.validity.tooLong) {
@@ -75,6 +94,23 @@ priceInput.addEventListener('invalid', () => {
   else {
     priceInput.setCustomValidity('');
   }
+});
+
+// Валидация времени заезда-выезда гостей
+
+const timeinInput = document.querySelector('#timein');
+const timeoutInput = document.querySelector('#timeout');
+
+const validateTimeinTimeout = (checkinTime, checkoutTime) => {
+  checkoutTime.value = checkinTime.value;
+};
+
+timeinInput.addEventListener('change', () => {
+  validateTimeinTimeout(timeinInput, timeoutInput);
+});
+
+timeoutInput.addEventListener('change', () => {
+  validateTimeinTimeout(timeoutInput, timeinInput);
 });
 
 // Валидация полей ввода количества комнат и количества гостей
