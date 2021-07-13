@@ -26,7 +26,7 @@ const enableForms = () => {
   }
 };
 
-enableForms();
+// enableForms();
 
 // Валидация поля ввода заголовка объявления
 
@@ -101,11 +101,13 @@ adForm.addEventListener('submit', (evt) => {
   if (validateRoomsAndGuests() === false) {
     evt.preventDefault();
   }
-  // roomNumberInput.addEventListener('change', () => {
-  //   checkRoomsAndGuestsMatching();
-  // });
-  //
-  // capacityInput.addEventListener('change', () => {
-  //   checkRoomsAndGuestsMatching();
-  // });
+  roomNumberInput.addEventListener('change', () => {
+    validateRoomsAndGuests();
+  });
+
+  capacityInput.addEventListener('change', () => {
+    validateRoomsAndGuests();
+  });
 });
+
+export {enableForms};
