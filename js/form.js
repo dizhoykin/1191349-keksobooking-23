@@ -4,6 +4,14 @@ import {disableFormElement} from './utils.js';
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
 
+const MINPRICE = {
+  'bungalow': 0,
+  'flat': 1000,
+  'hotel': 3000,
+  'house': 5000,
+  'palace': 10000,
+};
+
 const adForm = document.querySelector('.ad-form');
 
 const disableForms = () => {
@@ -25,8 +33,6 @@ const enableForms = () => {
     disabledElement.removeAttribute('disabled');
   }
 };
-
-// enableForms();
 
 // Валидация поля ввода заголовка объявления
 
@@ -61,9 +67,30 @@ titleInput.addEventListener('input', () => {
   titleInput.reportValidity();
 });
 
-// Валидация поля ввода цены
+// Вспомогательная функция для записи координат по движению главной метки
 
+const addressInput = document.querySelector('#address');
+
+const setCoordinates = (coordinates) => {
+  addressInput.setAttribute('readonly','');
+  addressInput.value = `${  coordinates.lat.toFixed(5)  }, ${  coordinates.lng.toFixed(5)}`;
+};
+
+// Валидация типа жилья и минимальной стоимости
+
+const typeInput = document.querySelector('#type');
 const priceInput = document.querySelector('#price');
+
+typeInput.addEventListener('change', () => {
+  priceInput.placeholder = MINPRICE[typeInput.value];
+  priceInput.setAttribute('min', MINPRICE[typeInput.value]);
+});
+
+priceInput.addEventListener('input', () => {
+  priceInput.setAttribute('min', MINPRICE[typeInput.value]);
+});
+
+// Валидация поля ввода цены
 
 priceInput.addEventListener('invalid', () => {
   if (priceInput.validity.tooLong) {
@@ -77,37 +104,50 @@ priceInput.addEventListener('invalid', () => {
   }
 });
 
+// Валидация времени заезда-выезда гостей
+
+const timeinInput = document.querySelector('#timein');
+const timeoutInput = document.querySelector('#timeout');
+
+const validateTimeinTimeout = (checkinTime, checkoutTime) => {
+  checkoutTime.value = checkinTime.value;
+};
+
+timeinInput.addEventListener('change', () => {
+  validateTimeinTimeout(timeinInput, timeoutInput);
+});
+
+timeoutInput.addEventListener('change', () => {
+  validateTimeinTimeout(timeoutInput, timeinInput);
+});
+
 // Валидация полей ввода количества комнат и количества гостей
 
 const roomNumberInput = document.querySelector('#room_number');
-const typeNumberRoomValue = Number(roomNumberInput.value);
 const capacityInput = document.querySelector('#capacity');
-const typeNumberCapacityValue = Number(capacityInput.value);
 
 const validateRoomsAndGuests = () => {
+  const typeNumberRoomValue = Number(roomNumberInput.value);
+  const typeNumberCapacityValue = Number(capacityInput.value);
+
   if ((typeNumberRoomValue === 1 && typeNumberCapacityValue !== 1) ||
     (typeNumberRoomValue === 2 && ((typeNumberCapacityValue !== 1) || (typeNumberCapacityValue !== 2))) ||
     (typeNumberRoomValue === 100 || typeNumberCapacityValue === 0)) {
     roomNumberInput.setCustomValidity('Выбрано ошибочное число комнат или гостей');
-    capacityInput.setCustomValidity('Выбрано ошибочное число комнат или гостей');
-    // console.log('Выбрано ошибочное число комнат или гостей');
     return false;
   }
   roomNumberInput.setCustomValidity('');
   capacityInput.setCustomValidity('');
 };
 
-adForm.addEventListener('submit', (evt) => {
-  if (validateRoomsAndGuests() === false) {
-    evt.preventDefault();
-  }
-  roomNumberInput.addEventListener('change', () => {
-    validateRoomsAndGuests();
-  });
-
-  capacityInput.addEventListener('change', () => {
-    validateRoomsAndGuests();
-  });
+roomNumberInput.addEventListener('change', () => {
+  validateRoomsAndGuests();
 });
 
-export {enableForms};
+capacityInput.addEventListener('change', () => {
+  validateRoomsAndGuests();
+});
+
+validateRoomsAndGuests();
+
+export {enableForms, setCoordinates};
