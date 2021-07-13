@@ -1,4 +1,4 @@
-import {enableForms} from './form.js';
+import {enableForms, setCoordinates} from './form.js';
 import {createAdsArray} from './data.js';
 import {showCard} from './card.js';
 
@@ -9,12 +9,14 @@ window.createAdsArray = createAdsArray;
 const ADS_NUMBER = 10;
 const adsList = createAdsArray(ADS_NUMBER);
 
-// Начальные координаты центра карты
+// Установка начальных координат карты
 
 const initialCoordinates = {
-  lat: 35.68950.toFixed(5) ,
-  lng: 139.69171.toFixed(5),
+  lat: 35.68950,
+  lng: 139.69171,
 };
+
+setCoordinates(initialCoordinates);
 
 // Загрузка карты и включение доступа к форме по загрузке
 
@@ -57,13 +59,9 @@ mainPinMarker.addTo(map);
 
 // Получение адреса главной метки от ее перемещения по карте
 
-const addressInput = document.querySelector('#address');
-addressInput.setAttribute('readonly','');
-addressInput.value = `${  initialCoordinates.lat  }, ${  initialCoordinates.lng}`;
-
 mainPinMarker.on('moveend', (evt) => {
   const newCoordinates = evt.target.getLatLng();
-  addressInput.value = `${ newCoordinates.lat.toFixed(5)  }, ${  newCoordinates.lng.toFixed(5)}`;
+  setCoordinates(newCoordinates);
 });
 
 // Вывод маркеров объявлений на основе данных сгенерированного массива объявлений
