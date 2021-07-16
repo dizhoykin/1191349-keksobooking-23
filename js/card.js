@@ -1,4 +1,8 @@
-import {addOfferFeatureValue} from './utils.js';
+import {addOfferFeatureValue, changeWordForm} from './utils.js';
+
+const TYPE = {'palace': 'Дворец', 'flat':'Квартира', 'house':'Дом', 'bungalow':'Бунгало', 'hotel':'Отель'};
+const ROOMS_WORD_FORM = ['комната','комнаты','комнат'];
+const GUESTS_WORD_FORM = ['гостя','гостей','гостей'];
 
 const adsListElementTemplate =  document.querySelector('#card')
   .content
@@ -7,24 +11,24 @@ const adsListElementTemplate =  document.querySelector('#card')
 const showCard = (adsObject) => {
   const adsListElement = adsListElementTemplate.cloneNode(true);
 
-  addOfferFeatureValue(adsListElement, '.popup__title', adsObject.ad.offer.title);
-  addOfferFeatureValue(adsListElement, '.popup__text--address', adsObject.ad.offer.address);
-  addOfferFeatureValue(adsListElement, '.popup__type', Object.values(adsObject.ad.offer.type));
-  addOfferFeatureValue(adsListElement, '.popup__description', adsObject.ad.offer.description);
+  addOfferFeatureValue(adsListElement, '.popup__title', adsObject.offer.title);
+  addOfferFeatureValue(adsListElement, '.popup__text--address', adsObject.offer.address);
+  addOfferFeatureValue(adsListElement, '.popup__type', TYPE[adsObject.offer.type]);
+  addOfferFeatureValue(adsListElement, '.popup__description', adsObject.offer.description);
 
-  addOfferFeatureValue(adsListElement, '.popup__text--price', adsObject.ad.offer.price ?
-    `${adsObject.ad.offer.price} ₽/ночь` : adsListElement.querySelector('.popup__text--price').classList.add('hidden'));
+  addOfferFeatureValue(adsListElement, '.popup__text--price', adsObject.offer.price ?
+    `${adsObject.offer.price} ₽/ночь` : adsListElement.querySelector('.popup__text--price').classList.add('hidden'));
 
-  addOfferFeatureValue(adsListElement, '.popup__text--capacity', (adsObject.ad.offer.rooms && adsObject.ad.offer.guests) ?
-    `${adsObject.ad.offer.rooms} комнаты для ${adsObject.ad.offer.guests} гостей` : adsListElement.querySelector('.popup__text--capacity').classList.add('hidden'));
+  addOfferFeatureValue(adsListElement, '.popup__text--capacity', (adsObject.offer.rooms && adsObject.offer.guests) ?
+    `${adsObject.offer.rooms} ${changeWordForm(adsObject.offer.rooms, ROOMS_WORD_FORM)} для ${adsObject.offer.guests} ${changeWordForm(adsObject.offer.guests, GUESTS_WORD_FORM)}` : adsListElement.querySelector('.popup__text--capacity').classList.add('hidden'));
 
-  addOfferFeatureValue(adsListElement, '.popup__text--time', (adsObject.ad.offer.checkin && adsObject.ad.offer.checkout) ?
-    `Заезд после ${adsObject.ad.offer.checkin}, выезд до ${adsObject.ad.offer.checkout}` : adsListElement.querySelector('.popup__text--time').classList.add('hidden'));
+  addOfferFeatureValue(adsListElement, '.popup__text--time', (adsObject.offer.checkin && adsObject.offer.checkout) ?
+    `Заезд после ${adsObject.offer.checkin}, выезд до ${adsObject.offer.checkout}` : adsListElement.querySelector('.popup__text--time').classList.add('hidden'));
 
   const featuresList = adsListElement.querySelector('.popup__features');
   featuresList.innerHTML = '';
-  if (adsObject.ad.offer.features) {
-    for (const feature of adsObject.ad.offer.features) {
+  if (adsObject.offer.features) {
+    for (const feature of adsObject.offer.features) {
       const featuresListItem = document.createElement('li');
       const featureClass = `popup__feature--${feature}`;
       featuresListItem.classList.add('popup__feature', featureClass);
@@ -38,10 +42,10 @@ const showCard = (adsObject) => {
   const photoList = adsListElement.querySelector('.popup__photos');
   let photoListElementTemplate = photoList.querySelector('.popup__photo');
   photoList.innerHTML = '';
-  if (adsObject.ad.offer.photos) {
-    for (let index = 0; index < adsObject.ad.offer.photos.length; index++) {
+  if (adsObject.offer.photos) {
+    for (let index = 0; index < adsObject.offer.photos.length; index++) {
       photoListElementTemplate = photoListElementTemplate.cloneNode(true);
-      photoListElementTemplate.src = adsObject.ad.offer.photos[index];
+      photoListElementTemplate.src = adsObject.offer.photos[index];
       photoList.appendChild(photoListElementTemplate);
     }
   }
@@ -50,8 +54,8 @@ const showCard = (adsObject) => {
   }
 
   const adsAvatar = adsListElement.querySelector('.popup__avatar');
-  if (adsObject.ad.author) {
-    adsAvatar.src = adsObject.ad.author;
+  if (adsObject.author.avatar) {
+    adsAvatar.src = adsObject.author.avatar;
   }
   else {
     adsAvatar.classList.add('hidden');

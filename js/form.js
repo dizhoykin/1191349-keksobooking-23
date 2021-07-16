@@ -1,5 +1,6 @@
 
-import {disableFormElement} from './utils.js';
+import {disableFormElement, isEscEvent} from './utils.js';
+// import {setInitialMapState} from './map.js';
 
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
@@ -34,6 +35,15 @@ const enableForms = () => {
   }
 };
 
+// Вспомогательная функция для записи координат по движению главной метки
+
+const addressInput = document.querySelector('#address');
+addressInput.setAttribute('readonly','');
+
+const setCoordinates = (coordinates) => {
+  addressInput.value = `${  coordinates.lat.toFixed(5)  }, ${  coordinates.lng.toFixed(5)}`;
+};
+
 // Валидация поля ввода заголовка объявления
 
 const titleInput = document.querySelector('#title');
@@ -66,15 +76,6 @@ titleInput.addEventListener('input', () => {
   }
   titleInput.reportValidity();
 });
-
-// Вспомогательная функция для записи координат по движению главной метки
-
-const addressInput = document.querySelector('#address');
-
-const setCoordinates = (coordinates) => {
-  addressInput.setAttribute('readonly','');
-  addressInput.value = `${  coordinates.lat.toFixed(5)  }, ${  coordinates.lng.toFixed(5)}`;
-};
 
 // Валидация типа жилья и минимальной стоимости
 
@@ -150,4 +151,75 @@ capacityInput.addEventListener('change', () => {
 
 validateRoomsAndGuests();
 
-export {enableForms, setCoordinates};
+const sendData = (onSuccess, onFail, body) => {
+  fetch(
+    'https://23.javascript.pages.academy/keksobooking',
+    {
+      method: 'POST',
+      body,
+    },
+  )
+    .then((response) => {
+      if (response.ok) {
+        onSuccess();
+      }
+      else {
+        onFail('Не удалось отправить форму. Попробуйте ещё раз');
+      }
+    })
+    .catch(() => {
+      onFail('Не удалось отправить форму. Попробуйте ещё раз');
+    });
+};
+
+// Вывод сообщений при отправке данных на сервера
+
+const bodyTag = document.querySelector('body');
+const success =  document.querySelector('#success')
+  .content
+  .querySelector('.success');
+
+const error =  document.querySelector('#error')
+  .content
+  .querySelector('.error');
+
+const sendMessage = (messageStatus) => {
+  const messageObect = messageStatus.cloneNode(true);
+  bodyTag.appendChild(messageObect);
+};
+
+// const errorButton = document.querySelector('#error')
+//   .content
+//   .querySelector('.error__button');
+
+// errorButton.addEventListener('click', () => {
+//   // bodyTag.removeChild(errorObject);
+//   console.log();
+// });
+
+// Отправка данных формы на сервер
+const submitForm = () => {
+  adForm.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    sendData(
+      () => sendMessage(success),
+      () => sendMessage(error),
+      new FormData(evt.target),
+    );
+  });
+};
+
+// Функция сброса данных формы
+
+const setInitialFormState = () => {
+  adForm.reset();
+};
+
+// const resetButton = document.querySelector('.ad-form__reset');
+// resetButton.addEventListener('click', () => {
+//   setInitialFormState();
+//   setInitialMapState();
+// });
+
+export {enableForms, setCoordinates, submitForm, setInitialFormState};
