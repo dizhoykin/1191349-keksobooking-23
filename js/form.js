@@ -1,5 +1,5 @@
 
-import {disableFormElement, isEscEvent} from './utils.js';
+import {disableFormElement} from './utils.js';
 // import {setInitialMapState} from './map.js';
 
 const TITLE_MIN_LENGTH = 30;
