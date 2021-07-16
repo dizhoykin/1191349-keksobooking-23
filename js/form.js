@@ -1,6 +1,6 @@
 
-import {disableFormElement} from './utils.js';
-// import {setInitialMapState} from './map.js';
+import {disableFormElement, isEscEvent} from './utils.js';
+import {getInitialCoordinates} from './data.js';
 
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
@@ -41,7 +41,7 @@ const addressInput = document.querySelector('#address');
 addressInput.setAttribute('readonly','');
 
 const setCoordinates = (coordinates) => {
-  addressInput.value = `${  coordinates.lat.toFixed(5)  }, ${  coordinates.lng.toFixed(5)}`;
+  addressInput.value = `${  coordinates().lat.toFixed(5)  }, ${  coordinates().lng.toFixed(5)}`;
 };
 
 // Валидация поля ввода заголовка объявления
@@ -164,15 +164,15 @@ const sendData = (onSuccess, onFail, body) => {
         onSuccess();
       }
       else {
-        onFail('Не удалось отправить форму. Попробуйте ещё раз');
+        onFail();
       }
     })
     .catch(() => {
-      onFail('Не удалось отправить форму. Попробуйте ещё раз');
+      onFail();
     });
 };
 
-// Вывод сообщений при отправке данных на сервера
+// Вывод сообщений при отправке данных на сервер
 
 const bodyTag = document.querySelector('body');
 const success =  document.querySelector('#success')
@@ -183,27 +183,43 @@ const error =  document.querySelector('#error')
   .content
   .querySelector('.error');
 
+const errorButton = document.querySelector('#error')
+  .content
+  .querySelector('.error__button');
+
 const sendMessage = (messageStatus) => {
   const messageObect = messageStatus.cloneNode(true);
   bodyTag.appendChild(messageObect);
+
+  const onEscKeydown = (evt) => {
+    if (isEscEvent(evt)) {
+      evt.preventDefault();
+      messageObect.classList.add('hidden');
+      document.removeEventListener('keydown', onEscKeydown);
+    }
+  };
+  document.addEventListener('keydown', onEscKeydown);
+
+  document.addEventListener('click', () => {
+    messageObect.classList.add('hidden');
+  });
+
+  errorButton.addEventListener('click', () => {
+    messageObect.classList.add('hidden');
+  });
 };
 
-// const errorButton = document.querySelector('#error')
-//   .content
-//   .querySelector('.error__button');
-
-// errorButton.addEventListener('click', () => {
-//   // bodyTag.removeChild(errorObject);
-//   console.log();
-// });
-
 // Отправка данных формы на сервер
-const submitForm = () => {
+
+const submitForm = (callback) => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     sendData(
-      () => sendMessage(success),
+      () => {
+        sendMessage(success);
+        callback();
+      },
       () => sendMessage(error),
       new FormData(evt.target),
     );
@@ -214,12 +230,7 @@ const submitForm = () => {
 
 const setInitialFormState = () => {
   adForm.reset();
+  setCoordinates(getInitialCoordinates);
 };
 
-// const resetButton = document.querySelector('.ad-form__reset');
-// resetButton.addEventListener('click', () => {
-//   setInitialFormState();
-//   setInitialMapState();
-// });
-
-export {enableForms, setCoordinates, submitForm, setInitialFormState};
+export {enableForms, submitForm, setInitialFormState, setCoordinates};

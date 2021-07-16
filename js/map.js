@@ -1,14 +1,10 @@
-import {enableForms, setCoordinates} from './form.js';
+import {enableForms} from './form.js';
 import {showCard} from './card.js';
+import {setCoordinates} from './form.js';
+import {getInitialCoordinates} from './data.js';
 
 // Установка начального состояния карты
 
-const initialCoordinates = {
-  lat: 35.68950,
-  lng: 139.69171,
-};
-
-setCoordinates(initialCoordinates);
 const map = L.map('map-canvas');
 
 // Установка главной метки
@@ -21,8 +17,8 @@ const mainPinIcon = L.icon({
 
 const mainPinMarker = L.marker(
   {
-    lat: initialCoordinates.lat,
-    lng: initialCoordinates.lng,
+    lat: getInitialCoordinates().lat,
+    lng: getInitialCoordinates().lng,
   },
   {
     draggable: true,
@@ -34,23 +30,24 @@ mainPinMarker.addTo(map);
 // Получение адреса главной метки от ее перемещения по карте
 
 mainPinMarker.on('moveend', (evt) => {
-  const newCoordinates = evt.target.getLatLng();
-  setCoordinates(newCoordinates);
+  const getNewCoordinates = () => evt.target.getLatLng();
+  setCoordinates(getNewCoordinates);
 });
 
 // Функция возвращения карты в начальное состояние, в том числе после отправки формы
+
 const setInitialMapState = () => {
-  setCoordinates(initialCoordinates);
+  setCoordinates(getInitialCoordinates);
   const mapInitial = map;
   mapInitial.on('load', () => {
     enableForms();
   })
     .setView({
-      lat: initialCoordinates.lat,
-      lng: initialCoordinates.lng,
+      lat: getInitialCoordinates().lat,
+      lng: getInitialCoordinates().lng,
     }, 10);
 
-  mainPinMarker.setLatLng([initialCoordinates.lat, initialCoordinates.lng]).update();
+  mainPinMarker.setLatLng([getInitialCoordinates().lat, getInitialCoordinates().lng]).update();
 };
 
 setInitialMapState();

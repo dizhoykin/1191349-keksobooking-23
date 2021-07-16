@@ -18,4 +18,13 @@ const getData = (onSuccess) => {
     });
 };
 
+
+// Обрабочик cброса данных формы и карты
+
+const resetButton = document.querySelector('.ad-form__reset');
+resetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  setInitialState();
+});
+
 export {getData, setInitialState};
