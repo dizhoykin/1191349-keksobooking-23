@@ -7,40 +7,57 @@ import {getInitialCoordinates} from './data.js';
 
 const map = L.map('map-canvas');
 
-// Установка главной метки
+// map.on('load', () => {
+  // console.log('!!');
 
-const mainPinIcon = L.icon({
-  iconUrl: '../img/main-pin.svg',
-  iconSize: [52, 52],
-  iconAnchor: [26, 52],
-});
+  // Установка главной метки
 
-const mainPinMarker = L.marker(
+  const mainPinIcon = L.icon({
+    iconUrl: '../img/main-pin.svg',
+    iconSize: [52, 52],
+    iconAnchor: [26, 52],
+  });
+
+  const mainPinMarker = L.marker(
+    {
+      lat: getInitialCoordinates().lat,
+      lng: getInitialCoordinates().lng,
+    },
+    {
+      draggable: true,
+      icon: mainPinIcon,
+    },
+  );
+  mainPinMarker.addTo(map);
+
+  // Получение адреса главной метки от ее перемещения по карте
+
+  mainPinMarker.on('moveend', (evt) => {
+    const getNewCoordinates = () => evt.target.getLatLng();
+    setCoordinates(getNewCoordinates);
+  });
+
+
+
+  // enableForms();
+  // setCoordinates(getInitialCoordinates);
+// });
+
+L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   {
-    lat: getInitialCoordinates().lat,
-    lng: getInitialCoordinates().lng,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   },
-  {
-    draggable: true,
-    icon: mainPinIcon,
-  },
-);
-mainPinMarker.addTo(map);
-
-// Получение адреса главной метки от ее перемещения по карте
-
-mainPinMarker.on('moveend', (evt) => {
-  const getNewCoordinates = () => evt.target.getLatLng();
-  setCoordinates(getNewCoordinates);
-});
+).addTo(map);
 
 // Функция возвращения карты в начальное состояние, в том числе после отправки формы
 
 const setInitialMapState = () => {
-  setCoordinates(getInitialCoordinates);
+  // setCoordinates(getInitialCoordinates);
   const mapInitial = map;
   mapInitial.on('load', () => {
     enableForms();
+    setCoordinates(getInitialCoordinates);
   })
     .setView({
       lat: getInitialCoordinates().lat,
@@ -50,14 +67,9 @@ const setInitialMapState = () => {
   mainPinMarker.setLatLng([getInitialCoordinates().lat, getInitialCoordinates().lng]).update();
 };
 
-setInitialMapState();
+// setInitialMapState();
 
-L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
-).addTo(map);
+
 
 // Вывод маркеров объявлений на основе данных сгенерированного массива объявлений
 

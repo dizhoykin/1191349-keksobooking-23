@@ -1,6 +1,10 @@
 
-import {disableFormElement, isEscEvent} from './utils.js';
+import {disableFormElement} from './utils.js';
 import {getInitialCoordinates} from './data.js';
+import {sendMessage} from './message.js';
+// import {setInitialMapState} from './map.js';
+// import {sendData} from './api.js';
+import {setInitialState} from './api.js';
 
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
@@ -172,9 +176,8 @@ const sendData = (onSuccess, onFail, body) => {
     });
 };
 
-// Вывод сообщений при отправке данных на сервер
+// Получение шаблоново сообщений для вывода пользователю.
 
-const bodyTag = document.querySelector('body');
 const success =  document.querySelector('#success')
   .content
   .querySelector('.success');
@@ -182,32 +185,6 @@ const success =  document.querySelector('#success')
 const error =  document.querySelector('#error')
   .content
   .querySelector('.error');
-
-const errorButton = document.querySelector('#error')
-  .content
-  .querySelector('.error__button');
-
-const sendMessage = (messageStatus) => {
-  const messageObect = messageStatus.cloneNode(true);
-  bodyTag.appendChild(messageObect);
-
-  const onEscKeydown = (evt) => {
-    if (isEscEvent(evt)) {
-      evt.preventDefault();
-      messageObect.classList.add('hidden');
-      document.removeEventListener('keydown', onEscKeydown);
-    }
-  };
-  document.addEventListener('keydown', onEscKeydown);
-
-  document.addEventListener('click', () => {
-    messageObect.classList.add('hidden');
-  });
-
-  errorButton.addEventListener('click', () => {
-    messageObect.classList.add('hidden');
-  });
-};
 
 // Отправка данных формы на сервер
 
@@ -232,5 +209,14 @@ const setInitialFormState = () => {
   adForm.reset();
   setCoordinates(getInitialCoordinates);
 };
+
+// Обрабочик cброса данных формы и карты
+
+const resetButton = document.querySelector('.ad-form__reset');
+resetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  setInitialState();
+});
+
 
 export {enableForms, submitForm, setInitialFormState, setCoordinates};
