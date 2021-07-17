@@ -18,26 +18,13 @@ const onEscKeydown = (evt) => {
   if (isEscEvent(evt)) {
     evt.preventDefault();
     closeMessage();
-    // bodyTag.removeChild(messageObect);
-    // document.removeEventListener('keydown', onEscKeydown);
   }
 };
 const closeMessage = () => {
-    bodyTag.removeChild(message);
-    document.removeEventListener('keydown', onEscKeydown);
-    document.removeEventListener('click', onclick);
+  bodyTag.removeChild(message);
+  document.removeEventListener('keydown', onEscKeydown);
+  document.removeEventListener('click', onclick);
 };
-
-  // const onEscKeydown = (evt) => {
-  //   if (isEscEvent(evt)) {
-  //     evt.preventDefault();
-  //     closeMessage();
-  //     // bodyTag.removeChild(messageObect);
-  //     // document.removeEventListener('keydown', onEscKeydown);
-  //   }
-  // };
-
-
 
 const sendMessage = (messageStatus) => {
   message = messageStatus.cloneNode(true);

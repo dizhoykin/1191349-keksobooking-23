@@ -1,11 +1,11 @@
-import {setInitialMapState} from './map.js';
-import {setInitialFormState} from './form.js';
+// import {setInitialMapState} from './map.js';
+// import {setInitialFormState} from './form.js';
 import {showAlert} from './utils.js';
 
-const setInitialState = () => {
-  setInitialFormState();
-  setInitialMapState();
-};
+// const setInitialState = () => {
+//   setInitialFormState();
+//   setInitialMapState();
+// };
 
 // Функция получения данных с сервера
 
@@ -53,4 +53,4 @@ const getData = (onSuccess) => {
 
 export {getData};
 // export {sendData};
-export {setInitialState};
+// export {setInitialState};

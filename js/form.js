@@ -2,9 +2,9 @@
 import {disableFormElement} from './utils.js';
 import {getInitialCoordinates} from './data.js';
 import {sendMessage} from './message.js';
-// import {setInitialMapState} from './map.js';
+import {mapReset} from './map.js';
 // import {sendData} from './api.js';
-import {setInitialState} from './api.js';
+// import {setInitialState} from './api.js';
 
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
@@ -188,14 +188,14 @@ const error =  document.querySelector('#error')
 
 // Отправка данных формы на сервер
 
-const submitForm = (callback) => {
+const submitForm = () => {
   adForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     sendData(
       () => {
         sendMessage(success);
-        callback();
+        mapReset();
       },
       () => sendMessage(error),
       new FormData(evt.target),
@@ -215,7 +215,7 @@ const setInitialFormState = () => {
 const resetButton = document.querySelector('.ad-form__reset');
 resetButton.addEventListener('click', (evt) => {
   evt.preventDefault();
-  setInitialState();
+  mapReset();
 });
 
 

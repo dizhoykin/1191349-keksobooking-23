@@ -9,6 +9,7 @@ const map = L.map('map-canvas');
 
 map.on('load', () => {
   enableForms();
+  setCoordinates(getInitialCoordinates);
 });
 
 const mainPinIcon = L.icon({
@@ -36,60 +37,25 @@ L.tileLayer(
   },
 ).addTo(map);
 
+// Получение адреса главной метки от ее перемещения по карте
 
-// map.setView({
-//   lat: getInitialCoordinates().lat,
-//   lng: getInitialCoordinates().lng,
-// }, 10);
-
-
-
-// map.on('load', () => {
-  // console.log('!!');
-
-  // Установка главной метки
-
-
-
-
-
-  // Получение адреса главной метки от ее перемещения по карте
-
-  mainPinMarker.on('moveend', (evt) => {
-    const getNewCoordinates = () => evt.target.getLatLng();
-    setCoordinates(getNewCoordinates);
-  });
-
-
-
-  // enableForms();
-  // setCoordinates(getInitialCoordinates);
-// });
-
-
+mainPinMarker.on('moveend', (evt) => {
+  const getNewCoordinates = () => evt.target.getLatLng();
+  setCoordinates(getNewCoordinates);
+});
 
 // Функция возвращения карты в начальное состояние, в том числе после отправки формы
 
-const setInitialMapState = () => {
-  // setCoordinates(getInitialCoordinates);
-  // const mapInitial = map;
+const mapReset = () => {
   map.setView({
     lat: getInitialCoordinates().lat,
     lng: getInitialCoordinates().lng,
   }, 10);
 
-  // mapInitial.on('load', () => {
-  //   enableForms();
-  //   setCoordinates(getInitialCoordinates);
-
-  // })
-
-
   mainPinMarker.setLatLng([getInitialCoordinates().lat, getInitialCoordinates().lng]).update();
 };
 
-setInitialMapState();
-
+mapReset();
 
 // Вывод маркеров объявлений на основе данных сгенерированного массива объявлений
 
@@ -121,4 +87,4 @@ const setAdsToMap = (adsList) => {
   });
 };
 
-export {setAdsToMap, setInitialMapState};
+export {setAdsToMap, mapReset};
