@@ -2,9 +2,8 @@
 import {disableFormElement} from './utils.js';
 import {getInitialCoordinates} from './data.js';
 import {sendMessage} from './message.js';
-import {mapReset} from './map.js';
-// import {sendData} from './api.js';
-// import {setInitialState} from './api.js';
+import {resetMap, makeInitialization} from './map.js';
+import {sendData} from './api.js';
 
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
@@ -31,13 +30,14 @@ const disableForms = () => {
 disableForms();
 
 const enableForms = () => {
-
   adForm.classList.remove('ad-form--disabled');
   const disabledElements = adForm.querySelectorAll('[disabled]');
   for (const disabledElement of disabledElements) {
     disabledElement.removeAttribute('disabled');
   }
 };
+
+enableForms();
 
 // Вспомогательная функция для записи координат по движению главной метки
 
@@ -47,6 +47,10 @@ addressInput.setAttribute('readonly','');
 const setCoordinates = (coordinates) => {
   addressInput.value = `${  coordinates().lat.toFixed(5)  }, ${  coordinates().lng.toFixed(5)}`;
 };
+
+setCoordinates(getInitialCoordinates);
+
+makeInitialization();
 
 // Валидация поля ввода заголовка объявления
 
@@ -155,27 +159,6 @@ capacityInput.addEventListener('change', () => {
 
 validateRoomsAndGuests();
 
-const sendData = (onSuccess, onFail, body) => {
-  fetch(
-    'https://23.javascript.pages.academy/keksobooking',
-    {
-      method: 'POST',
-      body,
-    },
-  )
-    .then((response) => {
-      if (response.ok) {
-        onSuccess();
-      }
-      else {
-        onFail();
-      }
-    })
-    .catch(() => {
-      onFail();
-    });
-};
-
 // Получение шаблоново сообщений для вывода пользователю.
 
 const success =  document.querySelector('#success')
@@ -186,7 +169,7 @@ const error =  document.querySelector('#error')
   .content
   .querySelector('.error');
 
-// Отправка данных формы на сервер
+// Функция отправки данных формы на сервер
 
 const submitForm = () => {
   adForm.addEventListener('submit', (evt) => {
@@ -195,7 +178,9 @@ const submitForm = () => {
     sendData(
       () => {
         sendMessage(success);
-        mapReset();
+        resetMap();
+        adForm.reset();
+        setCoordinates(getInitialCoordinates);
       },
       () => sendMessage(error),
       new FormData(evt.target),
@@ -203,20 +188,14 @@ const submitForm = () => {
   });
 };
 
-// Функция сброса данных формы
-
-const setInitialFormState = () => {
-  adForm.reset();
-  setCoordinates(getInitialCoordinates);
-};
-
-// Обрабочик cброса данных формы и карты
+// Обрабочик кнопки cброса данных формы и карты
 
 const resetButton = document.querySelector('.ad-form__reset');
 resetButton.addEventListener('click', (evt) => {
   evt.preventDefault();
-  mapReset();
+  resetMap();
+  adForm.reset();
+  setCoordinates(getInitialCoordinates);
 });
 
-
-export {enableForms, submitForm, setInitialFormState, setCoordinates};
+export {enableForms, submitForm, setCoordinates};

@@ -1,6 +1,4 @@
-import './form.js';
 import {submitForm} from './form.js';
-import './map.js';
 import {setAdsToMap} from './map.js';
 import {getData} from './api.js';
 

@@ -31,9 +31,7 @@ const sendMessage = (messageStatus) => {
   bodyTag.appendChild(message);
 
   document.addEventListener('keydown', onEscKeydown);
-
   document.addEventListener('click', onclick);
-
   errorButton.addEventListener('click', onclick);
 };
 

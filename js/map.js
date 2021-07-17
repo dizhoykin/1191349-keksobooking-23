@@ -1,16 +1,17 @@
-import {enableForms} from './form.js';
+import {enableForms, setCoordinates} from './form.js';
 import {showCard} from './card.js';
-import {setCoordinates} from './form.js';
 import {getInitialCoordinates} from './data.js';
 
 // Установка начального состояния карты
 
 const map = L.map('map-canvas');
 
-map.on('load', () => {
-  enableForms();
-  setCoordinates(getInitialCoordinates);
-});
+const makeInitialization = () => {
+  map.on('load', () => {
+    enableForms();
+    setCoordinates(getInitialCoordinates);
+  });
+};
 
 const mainPinIcon = L.icon({
   iconUrl: '../img/main-pin.svg',
@@ -44,9 +45,9 @@ mainPinMarker.on('moveend', (evt) => {
   setCoordinates(getNewCoordinates);
 });
 
-// Функция возвращения карты в начальное состояние, в том числе после отправки формы
+// Функция возвращения карты в начальное состояние
 
-const mapReset = () => {
+const resetMap = () => {
   map.setView({
     lat: getInitialCoordinates().lat,
     lng: getInitialCoordinates().lng,
@@ -55,7 +56,7 @@ const mapReset = () => {
   mainPinMarker.setLatLng([getInitialCoordinates().lat, getInitialCoordinates().lng]).update();
 };
 
-mapReset();
+resetMap();
 
 // Вывод маркеров объявлений на основе данных сгенерированного массива объявлений
 
@@ -87,4 +88,4 @@ const setAdsToMap = (adsList) => {
   });
 };
 
-export {setAdsToMap, mapReset};
+export {setAdsToMap, resetMap, makeInitialization};
