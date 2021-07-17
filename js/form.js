@@ -1,5 +1,9 @@
 
 import {disableFormElement} from './utils.js';
+import {getInitialCoordinates} from './data.js';
+import {sendMessage} from './message.js';
+import {resetMap, makeInitialization} from './map.js';
+import {sendData} from './api.js';
 
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
@@ -26,13 +30,27 @@ const disableForms = () => {
 disableForms();
 
 const enableForms = () => {
-
   adForm.classList.remove('ad-form--disabled');
   const disabledElements = adForm.querySelectorAll('[disabled]');
   for (const disabledElement of disabledElements) {
     disabledElement.removeAttribute('disabled');
   }
 };
+
+enableForms();
+
+// Вспомогательная функция для записи координат по движению главной метки
+
+const addressInput = document.querySelector('#address');
+addressInput.setAttribute('readonly','');
+
+const setCoordinates = (coordinates) => {
+  addressInput.value = `${  coordinates().lat.toFixed(5)  }, ${  coordinates().lng.toFixed(5)}`;
+};
+
+setCoordinates(getInitialCoordinates);
+
+makeInitialization();
 
 // Валидация поля ввода заголовка объявления
 
@@ -66,15 +84,6 @@ titleInput.addEventListener('input', () => {
   }
   titleInput.reportValidity();
 });
-
-// Вспомогательная функция для записи координат по движению главной метки
-
-const addressInput = document.querySelector('#address');
-
-const setCoordinates = (coordinates) => {
-  addressInput.setAttribute('readonly','');
-  addressInput.value = `${  coordinates.lat.toFixed(5)  }, ${  coordinates.lng.toFixed(5)}`;
-};
 
 // Валидация типа жилья и минимальной стоимости
 
@@ -149,5 +158,42 @@ capacityInput.addEventListener('change', () => {
 });
 
 validateRoomsAndGuests();
+
+// Получение шаблоново сообщений для вывода пользователю.
+
+const success =  document.querySelector('#success')
+  .content
+  .querySelector('.success');
+
+const error =  document.querySelector('#error')
+  .content
+  .querySelector('.error');
+
+// Функция отправки данных формы на сервер
+
+adForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
+
+  sendData(
+    () => {
+      sendMessage(success);
+      resetMap();
+      adForm.reset();
+      setCoordinates(getInitialCoordinates);
+    },
+    () => sendMessage(error),
+    new FormData(evt.target),
+  );
+});
+
+// Обрабочик кнопки cброса данных формы и карты
+
+const resetButton = document.querySelector('.ad-form__reset');
+resetButton.addEventListener('click', (evt) => {
+  evt.preventDefault();
+  resetMap();
+  adForm.reset();
+  setCoordinates(getInitialCoordinates);
+});
 
 export {enableForms, setCoordinates};

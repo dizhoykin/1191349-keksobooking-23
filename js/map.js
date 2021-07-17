@@ -1,42 +1,17 @@
 import {enableForms, setCoordinates} from './form.js';
-import {createAdsArray} from './data.js';
 import {showCard} from './card.js';
+import {getInitialCoordinates} from './data.js';
 
-// Создание массива объявлений со случайными данными
+// Установка начального состояния карты
 
-window.createAdsArray = createAdsArray;
+const map = L.map('map-canvas');
 
-const ADS_NUMBER = 10;
-const adsList = createAdsArray(ADS_NUMBER);
-
-// Установка начальных координат карты
-
-const initialCoordinates = {
-  lat: 35.68950,
-  lng: 139.69171,
-};
-
-setCoordinates(initialCoordinates);
-
-// Загрузка карты и включение доступа к форме по загрузке
-
-const map = L.map('map-canvas')
-  .on('load', () => {
+const makeInitialization = () => {
+  map.on('load', () => {
     enableForms();
-  })
-  .setView({
-    lat: initialCoordinates.lat,
-    lng: initialCoordinates.lng,
-  }, 10);
-
-L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  },
-).addTo(map);
-
-// Установка главной метки
+    setCoordinates(getInitialCoordinates);
+  });
+};
 
 const mainPinIcon = L.icon({
   iconUrl: '../img/main-pin.svg',
@@ -46,48 +21,71 @@ const mainPinIcon = L.icon({
 
 const mainPinMarker = L.marker(
   {
-    lat: initialCoordinates.lat,
-    lng: initialCoordinates.lng,
+    lat: getInitialCoordinates().lat,
+    lng: getInitialCoordinates().lng,
   },
   {
     draggable: true,
     icon: mainPinIcon,
   },
 );
-
 mainPinMarker.addTo(map);
+
+L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  },
+).addTo(map);
 
 // Получение адреса главной метки от ее перемещения по карте
 
 mainPinMarker.on('moveend', (evt) => {
-  const newCoordinates = evt.target.getLatLng();
-  setCoordinates(newCoordinates);
+  const getNewCoordinates = () => evt.target.getLatLng();
+  setCoordinates(getNewCoordinates);
 });
+
+// Функция возвращения карты в начальное состояние
+
+const resetMap = () => {
+  map.setView({
+    lat: getInitialCoordinates().lat,
+    lng: getInitialCoordinates().lng,
+  }, 10);
+
+  mainPinMarker.setLatLng([getInitialCoordinates().lat, getInitialCoordinates().lng]).update();
+};
+
+resetMap();
 
 // Вывод маркеров объявлений на основе данных сгенерированного массива объявлений
 
-adsList.forEach((adsListElement) => {
-  const icon = L.icon({
-    iconUrl: '../img/pin.svg',
-    iconSize: [40, 40],
-    iconAnchor: [20, 40],
-  });
+const setAdsToMap = (adsList) => {
+  adsList.forEach((adsListElement) => {
+    const icon = L.icon({
+      iconUrl: '../img/pin.svg',
+      iconSize: [40, 40],
+      iconAnchor: [20, 40],
+    });
 
-  const marker = L.marker(
-    {
-      lat: adsListElement.ad.location.lat,
-      lng: adsListElement.ad.location.lng,
-    },
-    {
-      icon,
-    },
-  );
-  marker
-    .addTo(map)
-    .bindPopup(
-      showCard(adsListElement),
+    const marker = L.marker(
       {
-        keepInView: true,
+        lat: adsListElement.location.lat,
+        lng: adsListElement.location.lng,
+      },
+      {
+        icon,
       },
     );
-});
+    marker
+      .addTo(map)
+      .bindPopup(
+        showCard(adsListElement),
+        {
+          keepInView: true,
+        },
+      );
+  });
+};
+
+export {setAdsToMap, resetMap, makeInitialization};
