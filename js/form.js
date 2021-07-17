@@ -171,22 +171,20 @@ const error =  document.querySelector('#error')
 
 // Функция отправки данных формы на сервер
 
-const submitForm = () => {
-  adForm.addEventListener('submit', (evt) => {
-    evt.preventDefault();
+adForm.addEventListener('submit', (evt) => {
+  evt.preventDefault();
 
-    sendData(
-      () => {
-        sendMessage(success);
-        resetMap();
-        adForm.reset();
-        setCoordinates(getInitialCoordinates);
-      },
-      () => sendMessage(error),
-      new FormData(evt.target),
-    );
-  });
-};
+  sendData(
+    () => {
+      sendMessage(success);
+      resetMap();
+      adForm.reset();
+      setCoordinates(getInitialCoordinates);
+    },
+    () => sendMessage(error),
+    new FormData(evt.target),
+  );
+});
 
 // Обрабочик кнопки cброса данных формы и карты
 
@@ -198,4 +196,4 @@ resetButton.addEventListener('click', (evt) => {
   setCoordinates(getInitialCoordinates);
 });
 
-export {enableForms, submitForm, setCoordinates};
+export {enableForms, setCoordinates};

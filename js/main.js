@@ -1,4 +1,4 @@
-import {submitForm} from './form.js';
+import './form.js';
 import {setAdsToMap} from './map.js';
 import {getData} from './api.js';
 
@@ -8,4 +8,4 @@ getData((adsList) => {
   setAdsToMap(adsList.slice(0, ADS_COUNT));
 });
 
-submitForm();
+// submitForm();
