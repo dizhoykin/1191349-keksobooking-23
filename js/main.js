@@ -1,7 +1,7 @@
 import './form.js';
-import {setAdsToMap} from './map.js';
+import './images.js';
 import {getData} from './api.js';
-import {disableMapFilters, enableMapFilters} from './map.js';
+import {setAdsToMap, disableMapFilters, enableMapFilters} from './map.js';
 
 disableMapFilters();
 
