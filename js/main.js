@@ -1,11 +1,18 @@
 import './form.js';
-import {setAdsToMap} from './map.js';
+import './images.js';
 import {getData} from './api.js';
+import {setAdsToMap, disableMapFilters, enableMapFilters} from './map.js';
 
-const ADS_COUNT = 10;
+disableMapFilters();
+
+let data = [];
 
 getData((adsList) => {
-  setAdsToMap(adsList.slice(0, ADS_COUNT));
+  data = adsList;
+  enableMapFilters();
+  setAdsToMap(adsList);
 });
 
-// submitForm();
+const getAdsArray = () => data;
+
+export {getAdsArray};
