@@ -1,26 +1,27 @@
 import {addOfferFeatureValue, changeWordForm} from './utils.js';
 
-const TYPE = {'palace': 'Дворец', 'flat':'Квартира', 'house':'Дом', 'bungalow':'Бунгало', 'hotel':'Отель'};
-const ROOMS_WORD_FORM = ['комната','комнаты','комнат'];
-const GUESTS_WORD_FORM = ['гостя','гостей','гостей'];
+const type = {'palace': 'Дворец', 'flat':'Квартира', 'house':'Дом', 'bungalow':'Бунгало', 'hotel':'Отель'};
+const roomWordForms = ['комната','комнаты','комнат'];
+const guestWordForms = ['гостя','гостей','гостей'];
 
 const adsListElementTemplate =  document.querySelector('#card')
   .content
   .querySelector('.popup');
+
 
 const showCard = (adsObject) => {
   const adsListElement = adsListElementTemplate.cloneNode(true);
 
   addOfferFeatureValue(adsListElement, '.popup__title', adsObject.offer.title);
   addOfferFeatureValue(adsListElement, '.popup__text--address', adsObject.offer.address);
-  addOfferFeatureValue(adsListElement, '.popup__type', TYPE[adsObject.offer.type]);
+  addOfferFeatureValue(adsListElement, '.popup__type', type[adsObject.offer.type]);
   addOfferFeatureValue(adsListElement, '.popup__description', adsObject.offer.description);
 
   addOfferFeatureValue(adsListElement, '.popup__text--price', adsObject.offer.price ?
     `${adsObject.offer.price} ₽/ночь` : adsListElement.querySelector('.popup__text--price').classList.add('hidden'));
 
   addOfferFeatureValue(adsListElement, '.popup__text--capacity', (adsObject.offer.rooms && adsObject.offer.guests) ?
-    `${adsObject.offer.rooms} ${changeWordForm(adsObject.offer.rooms, ROOMS_WORD_FORM)} для ${adsObject.offer.guests} ${changeWordForm(adsObject.offer.guests, GUESTS_WORD_FORM)}` : adsListElement.querySelector('.popup__text--capacity').classList.add('hidden'));
+    `${adsObject.offer.rooms} ${changeWordForm(adsObject.offer.rooms, roomWordForms)} для ${adsObject.offer.guests} ${changeWordForm(adsObject.offer.guests, guestWordForms)}` : adsListElement.querySelector('.popup__text--capacity').classList.add('hidden'));
 
   addOfferFeatureValue(adsListElement, '.popup__text--time', (adsObject.offer.checkin && adsObject.offer.checkout) ?
     `Заезд после ${adsObject.offer.checkin}, выезд до ${adsObject.offer.checkout}` : adsListElement.querySelector('.popup__text--time').classList.add('hidden'));
@@ -53,12 +54,12 @@ const showCard = (adsObject) => {
     photoList.classList.add('hidden');
   }
 
-  const adsAvatar = adsListElement.querySelector('.popup__avatar');
+  const adsAvatarElement = adsListElement.querySelector('.popup__avatar');
   if (adsObject.author.avatar) {
-    adsAvatar.src = adsObject.author.avatar;
+    adsAvatarElement.src = adsObject.author.avatar;
   }
   else {
-    adsAvatar.classList.add('hidden');
+    adsAvatarElement.classList.add('hidden');
   }
   return adsListElement;
 };

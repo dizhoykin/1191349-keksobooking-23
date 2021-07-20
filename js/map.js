@@ -1,4 +1,4 @@
-import {enableForms, setCoordinates} from './form.js';
+import {setCoordinates} from './form.js';
 import {showCard} from './card.js';
 import {getInitialCoordinates} from './data.js';
 import {getAdsArray} from './main.js';
@@ -12,9 +12,9 @@ const UPPER_PRICE_LIMIT = 50000;
 
 const map = L.map('map-canvas');
 
-const makeInitialization = () => {
+const makeInitialization = (callback) => {
   map.on('load', () => {
-    enableForms();
+    callback();
     setCoordinates(getInitialCoordinates);
   });
 };
@@ -66,150 +66,68 @@ resetMap();
 
 import {disableFormElement} from './utils.js';
 
-const mapFilters = document.querySelector('.map__filters');
+const mapFiltersElement = document.querySelector('.map__filters');
 
 // Функция выключения элементов формы с фильтрами
 
 const disableMapFilters = () => {
-  disableFormElement('input', mapFilters);
-  disableFormElement('select', mapFilters);
+  disableFormElement('input', mapFiltersElement);
+  disableFormElement('select', mapFiltersElement);
 };
 
 // Функция включения элементов формы с фильтрами
 
 const enableMapFilters = () => {
-  const disabledMapFilters = mapFilters.querySelectorAll('[disabled]');
-  for (const disabledMapFilter of disabledMapFilters) {
+  const disabledMapFiltersList = mapFiltersElement.querySelectorAll('[disabled]');
+  for (const disabledMapFilter of disabledMapFiltersList) {
     disabledMapFilter.removeAttribute('disabled');
   }
 };
 
 // Фильтрация меток объявлений на карте
 
-const type = mapFilters.querySelector('#housing-type');
-const rooms = mapFilters.querySelector('#housing-rooms');
-const guests = mapFilters.querySelector('#housing-guests');
-const price = mapFilters.querySelector('#housing-price');
+const typeElement = mapFiltersElement.querySelector('#housing-type');
+const roomsElement = mapFiltersElement.querySelector('#housing-rooms');
+const guestsElement = mapFiltersElement.querySelector('#housing-guests');
+const priceElement = mapFiltersElement.querySelector('#housing-price');
 
-const checkbyType = (adObject) => {
-  if (type.value === 'any') {
-    return true;
-  }
-  else {
-    return (adObject.offer.type === type.value);
-  }
-};
-
-const checkbyRooms = (adObject) => {
-  if (rooms.value === 'any') {
-    return true;
-  }
-  else {
-    return (adObject.offer.rooms === Number(rooms.value));
-  }
-};
-
-const checkbyGuests = (adObject) => {
-  if (guests.value === 'any') {
-    return true;
-  }
-  else {
-    return (adObject.offer.guests === Number(guests.value));
-  }
-};
+const checkbyType = (adObject) => (typeElement.value === 'any') ? true : (adObject.offer.type === typeElement.value);
+const checkbyRooms = (adObject) => (roomsElement.value === 'any') ? true : (adObject.offer.rooms === Number(roomsElement.value));
+const checkbyGuests = (adObject) => (guestsElement.value === 'any') ? true : (adObject.offer.guests <= Number(guestsElement.value));
 
 const checkbyPrice = (adObject) => {
-  if (price.value === 'any') {
+  if (priceElement.value === 'any') {
     return true;
   }
-  else if (adObject.offer.price < LOWER_PRICE_LIMIT) {
-    const statusValue = 'low';
-    return (statusValue === price.value);
+  else if (priceElement.value === 'low') {
+    return adObject.offer.price < LOWER_PRICE_LIMIT;
   }
-  else if (adObject.offer.price > UPPER_PRICE_LIMIT) {
-    const statusValue = 'high';
-    return (statusValue === price.value);
+  else if (priceElement.value === 'high') {
+    return adObject.offer.price > UPPER_PRICE_LIMIT;
   }
-  else {
-    const statusValue = 'middle';
-    return (statusValue === price.value);
-  }
+  return (adObject.offer.price > LOWER_PRICE_LIMIT) && (adObject.offer.price < UPPER_PRICE_LIMIT);
 };
 
-const wifi = mapFilters.querySelector('#filter-wifi');
-const dishwasher = mapFilters.querySelector('#filter-dishwasher');
-const parking = mapFilters.querySelector('#filter-parking');
-const washer = mapFilters.querySelector('#filter-washer');
-const elevator = mapFilters.querySelector('#filter-elevator');
-const conditioner = mapFilters.querySelector('#filter-conditioner');
+const wifiElement = mapFiltersElement.querySelector('#filter-wifi');
+const dishwasherElement = mapFiltersElement.querySelector('#filter-dishwasher');
+const parkingElement = mapFiltersElement.querySelector('#filter-parking');
+const washerElement = mapFiltersElement.querySelector('#filter-washer');
+const elevatorElement = mapFiltersElement.querySelector('#filter-elevator');
+const conditionerElement = mapFiltersElement.querySelector('#filter-conditioner');
+
+const checkByWifi = (adObject) => (!wifiElement.checked) ? true : (adObject.offer.features.includes(wifiElement.value));
+const checkByDishwasher = (adObject) => (!dishwasherElement.checked) ? true : (adObject.offer.features.includes(dishwasherElement.value));
+const checkByParking = (adObject) => (!parkingElement.checked) ? true : (adObject.offer.features.includes(parkingElement.value));
+const checkByWasher = (adObject) => (!washerElement.checked) ? true : (adObject.offer.features.includes(washerElement.value));
+const checkByElevator = (adObject) => (!elevatorElement.checked) ? true : (adObject.offer.features.includes(elevatorElement.value));
+const checkByConditioner = (adObject) => (!conditionerElement.checked) ? true : (adObject.offer.features.includes(conditionerElement.value));
 
 const checkByFeatures = (adObject) => {
-  const checkByWifi = () => {
-    if (!wifi.checked) {
-      return true;
-    }
-    else
-    {
-      return (adObject.offer.features.includes(wifi.value));
-    }
-  };
-
-  const checkByDishwasher = () => {
-    if (!dishwasher.checked) {
-      return true;
-    }
-    else
-    {
-      return (adObject.offer.features.includes(dishwasher.value));
-    }
-  };
-
-  const checkByParking = () => {
-    if (!parking.checked) {
-      return true;
-    }
-    else
-    {
-      return (adObject.offer.features.includes(parking.value));
-    }
-  };
-
-  const checkByWasher = () => {
-    if (!washer.checked) {
-      return true;
-    }
-    else
-    {
-      return (adObject.offer.features.includes(washer.value));
-    }
-  };
-
-  const checkByElevator = () => {
-    if (!elevator.checked) {
-      return true;
-    }
-    else
-    {
-      return (adObject.offer.features.includes(elevator.value));
-    }
-  };
-
-  const checkByConditioner = () => {
-    if (!conditioner.checked) {
-      return true;
-    }
-    else
-    {
-      return (adObject.offer.features.includes(conditioner.value));
-    }
-  };
-
   if (!adObject.offer.features) {
-    return false;
+    adObject.offer.features = [];
+    return true;
   }
-  else {
-    return (checkByWifi() && checkByDishwasher() && checkByParking() && checkByWasher() && checkByElevator() && checkByConditioner());
-  }
+  return (checkByWifi(adObject) && checkByDishwasher(adObject) && checkByParking(adObject) && checkByWasher(adObject) && checkByElevator(adObject) && checkByConditioner(adObject));
 };
 
 const checkAllFilters = (adsListElement) => (checkbyType(adsListElement) && checkbyRooms(adsListElement) && checkbyGuests(adsListElement) &&
@@ -252,9 +170,9 @@ const setAdsToMap = (adsList) => {
     });
 };
 
-mapFilters.addEventListener('change', debounce(() => {
+mapFiltersElement.addEventListener('change', debounce(() => {
   markers.clearLayers();
   setAdsToMap(getAdsArray());
 }));
 
-export {setAdsToMap, resetMap, makeInitialization, disableMapFilters, enableMapFilters};
+export {setAdsToMap, resetMap, disableMapFilters, enableMapFilters, makeInitialization};

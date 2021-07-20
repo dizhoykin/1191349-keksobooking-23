@@ -2,13 +2,14 @@ import {isEscEvent} from './utils.js';
 
 // Вывод сообщений при отправке данных на сервер
 
-const bodyTag = document.querySelector('body');
+const bodyElement = document.querySelector('body');
 
 const errorButton = document.querySelector('#error')
   .content
   .querySelector('.error__button');
 
 let message = null;
+let closeMessage = {};
 
 const onclick = () => {
   closeMessage();
@@ -20,15 +21,16 @@ const onEscKeydown = (evt) => {
     closeMessage();
   }
 };
-const closeMessage = () => {
-  bodyTag.removeChild(message);
+
+closeMessage = () => {
+  bodyElement.removeChild(message);
   document.removeEventListener('keydown', onEscKeydown);
   document.removeEventListener('click', onclick);
 };
 
 const sendMessage = (messageStatus) => {
   message = messageStatus.cloneNode(true);
-  bodyTag.appendChild(message);
+  bodyElement.appendChild(message);
 
   document.addEventListener('keydown', onEscKeydown);
   document.addEventListener('click', onclick);

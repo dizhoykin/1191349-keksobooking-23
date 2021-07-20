@@ -8,7 +8,7 @@ import {sendData} from './api.js';
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
 
-const MINPRICE = {
+const minPrice = {
   'bungalow': 0,
   'flat': 1000,
   'hotel': 3000,
@@ -16,144 +16,137 @@ const MINPRICE = {
   'palace': 10000,
 };
 
-const adForm = document.querySelector('.ad-form');
+const adFormElement = document.querySelector('.ad-form');
 
 const disableForms = () => {
-  adForm.classList.add('ad-form--disabled');
+  adFormElement.classList.add('ad-form--disabled');
 
-  disableFormElement('input', adForm);
-  disableFormElement('select', adForm);
-  disableFormElement('textarea', adForm);
-  disableFormElement('button', adForm);
+  disableFormElement('input', adFormElement);
+  disableFormElement('select', adFormElement);
+  disableFormElement('textarea', adFormElement);
+  disableFormElement('button', adFormElement);
 };
 
 disableForms();
 
+const disabledElementList = adFormElement.querySelectorAll('[disabled]');
+
 const enableForms = () => {
-  adForm.classList.remove('ad-form--disabled');
-  const disabledElements = adForm.querySelectorAll('[disabled]');
-  for (const disabledElement of disabledElements) {
+  adFormElement.classList.remove('ad-form--disabled');
+  for (const disabledElement of disabledElementList) {
     disabledElement.removeAttribute('disabled');
   }
 };
 
-enableForms();
-
 // Вспомогательная функция для записи координат по движению главной метки
 
-const addressInput = document.querySelector('#address');
-addressInput.setAttribute('readonly','');
+const addressInputElement = document.querySelector('#address');
+addressInputElement.setAttribute('readonly','');
 
 const setCoordinates = (coordinates) => {
-  addressInput.value = `${  coordinates().lat.toFixed(5)  }, ${  coordinates().lng.toFixed(5)}`;
+  addressInputElement.value = `${  coordinates().lat.toFixed(5)  }, ${  coordinates().lng.toFixed(5)}`;
 };
 
 setCoordinates(getInitialCoordinates);
 
-makeInitialization();
+makeInitialization(enableForms());
 
 // Валидация поля ввода заголовка объявления
 
-const titleInput = document.querySelector('#title');
+const titleInputElement = document.querySelector('#title');
 
-titleInput.addEventListener('invalid', () => {
-  if (titleInput.validity.tooShort) {
-    titleInput.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
+titleInputElement.addEventListener('invalid', () => {
+  if (titleInputElement.validity.tooShort) {
+    titleInputElement.setCustomValidity('Заголовок должен состоять минимум из 30 символов');
   }
-  else if (titleInput.validity.tooLong) {
-    titleInput.setCustomValidity('Заголовок должен состоять максимум из 100 символов');
+  else if (titleInputElement.validity.tooLong) {
+    titleInputElement.setCustomValidity('Заголовок должен состоять максимум из 100 символов');
   }
-  else if (titleInput.validity.valueMissing) {
-    titleInput.setCustomValidity('Это обязательное поле');
+  else if (titleInputElement.validity.valueMissing) {
+    titleInputElement.setCustomValidity('Это обязательное поле');
   }
-  else {
-    titleInput.setCustomValidity('');
-  }
+  titleInputElement.setCustomValidity('');
 });
 
-titleInput.addEventListener('input', () => {
-  const titleValueLength = titleInput.value.length;
+titleInputElement.addEventListener('input', () => {
+  const titleValueLength = titleInputElement.value.length;
   if (titleValueLength < TITLE_MIN_LENGTH) {
-    titleInput.setCustomValidity(`Ещё ${  TITLE_MIN_LENGTH - titleValueLength } симв.`);
+    titleInputElement.setCustomValidity(`Ещё ${  TITLE_MIN_LENGTH - titleValueLength } симв.`);
   }
   else if (titleValueLength > TITLE_MAX_LENGTH) {
-    titleInput.setCustomValidity(`Удалите лишние ${  titleValueLength - TITLE_MAX_LENGTH } симв.`);
+    titleInputElement.setCustomValidity(`Удалите лишние ${  titleValueLength - TITLE_MAX_LENGTH } симв.`);
   }
-  else {
-    titleInput.setCustomValidity('');
-  }
-  titleInput.reportValidity();
+  titleInputElement.setCustomValidity('');
+  titleInputElement.reportValidity();
 });
 
 // Валидация типа жилья и минимальной стоимости
 
-const typeInput = document.querySelector('#type');
-const priceInput = document.querySelector('#price');
+const typeInputElement = document.querySelector('#type');
+const priceInputElement = document.querySelector('#price');
 
-typeInput.addEventListener('change', () => {
-  priceInput.placeholder = MINPRICE[typeInput.value];
-  priceInput.setAttribute('min', MINPRICE[typeInput.value]);
+typeInputElement.addEventListener('change', () => {
+  priceInputElement.placeholder = minPrice[typeInputElement.value];
+  priceInputElement.setAttribute('min', minPrice[typeInputElement.value]);
 });
 
-priceInput.addEventListener('input', () => {
-  priceInput.setAttribute('min', MINPRICE[typeInput.value]);
+priceInputElement.addEventListener('input', () => {
+  priceInputElement.setAttribute('min', minPrice[typeInputElement.value]);
 });
 
 // Валидация поля ввода цены
 
-priceInput.addEventListener('invalid', () => {
-  if (priceInput.validity.tooLong) {
-    priceInput.setCustomValidity('Цена не должна превышать 1000000');
+priceInputElement.addEventListener('invalid', () => {
+  if (priceInputElement.validity.tooLong) {
+    priceInputElement.setCustomValidity('Цена не должна превышать 1000000');
   }
-  else if (priceInput.validity.valueMissing) {
-    priceInput.setCustomValidity('Это обязательное поле');
+  else if (priceInputElement.validity.valueMissing) {
+    priceInputElement.setCustomValidity('Это обязательное поле');
   }
-  else {
-    priceInput.setCustomValidity('');
-  }
+  priceInputElement.setCustomValidity('');
 });
 
 // Валидация времени заезда-выезда гостей
 
-const timeinInput = document.querySelector('#timein');
-const timeoutInput = document.querySelector('#timeout');
+const timeinInputElement = document.querySelector('#timein');
+const timeoutInputElement = document.querySelector('#timeout');
 
 const validateTimeinTimeout = (checkinTime, checkoutTime) => {
   checkoutTime.value = checkinTime.value;
 };
 
-timeinInput.addEventListener('change', () => {
-  validateTimeinTimeout(timeinInput, timeoutInput);
+timeinInputElement.addEventListener('change', () => {
+  validateTimeinTimeout(timeinInputElement, timeoutInputElement);
 });
 
-timeoutInput.addEventListener('change', () => {
-  validateTimeinTimeout(timeoutInput, timeinInput);
+timeoutInputElement.addEventListener('change', () => {
+  validateTimeinTimeout(timeoutInputElement, timeinInputElement);
 });
 
 // Валидация полей ввода количества комнат и количества гостей
 
-const roomNumberInput = document.querySelector('#room_number');
-const capacityInput = document.querySelector('#capacity');
+const roomNumberInputElement = document.querySelector('#room_number');
+const capacityInputElement = document.querySelector('#capacity');
 
 const validateRoomsAndGuests = () => {
-  const typeNumberRoomValue = Number(roomNumberInput.value);
-  const typeNumberCapacityValue = Number(capacityInput.value);
+  const typeNumberRoomValue = Number(roomNumberInputElement.value);
+  const typeNumberCapacityValue = Number(capacityInputElement.value);
 
   if ((typeNumberRoomValue === 1 && typeNumberCapacityValue !== 1) ||
     (typeNumberRoomValue === 2 && ((typeNumberCapacityValue !== 1) || (typeNumberCapacityValue !== 2))) ||
     (typeNumberRoomValue === 100 || typeNumberCapacityValue === 0)) {
-    roomNumberInput.setCustomValidity('Выбрано ошибочное число комнат или гостей');
+    roomNumberInputElement.setCustomValidity('Выбрано ошибочное число комнат или гостей');
     return false;
   }
-  roomNumberInput.setCustomValidity('');
-  capacityInput.setCustomValidity('');
+  roomNumberInputElement.setCustomValidity('');
+  capacityInputElement.setCustomValidity('');
 };
 
-roomNumberInput.addEventListener('change', () => {
+roomNumberInputElement.addEventListener('change', () => {
   validateRoomsAndGuests();
 });
 
-capacityInput.addEventListener('change', () => {
+capacityInputElement.addEventListener('change', () => {
   validateRoomsAndGuests();
 });
 
@@ -161,27 +154,27 @@ validateRoomsAndGuests();
 
 // Получение шаблоново сообщений для вывода пользователю.
 
-const success =  document.querySelector('#success')
+const successElement = document.querySelector('#success')
   .content
   .querySelector('.success');
 
-const error =  document.querySelector('#error')
+const errorElement =  document.querySelector('#error')
   .content
   .querySelector('.error');
 
 // Функция отправки данных формы на сервер
 
-adForm.addEventListener('submit', (evt) => {
+adFormElement.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   sendData(
     () => {
-      sendMessage(success);
+      sendMessage(successElement);
       resetMap();
-      adForm.reset();
+      adFormElement.reset();
       setCoordinates(getInitialCoordinates);
     },
-    () => sendMessage(error),
+    () => sendMessage(errorElement),
     new FormData(evt.target),
   );
 });
@@ -192,7 +185,7 @@ const resetButton = document.querySelector('.ad-form__reset');
 resetButton.addEventListener('click', (evt) => {
   evt.preventDefault();
   resetMap();
-  adForm.reset();
+  adFormElement.reset();
   setCoordinates(getInitialCoordinates);
 });
 
