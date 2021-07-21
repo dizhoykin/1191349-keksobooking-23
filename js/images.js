@@ -1,13 +1,13 @@
-const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+const fileTypes = ['gif', 'jpg', 'jpeg', 'png'];
 
 const uploadImages = (fileChooser, preview) => {
   fileChooser.addEventListener('change', () => {
     const file = fileChooser.files[0];
     const fileName = file.name.toLowerCase();
 
-    const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+    const matches = fileTypes.some((it) => fileName.endsWith(it));
 
-    if(matches) {
+    if (matches) {
       const reader = new FileReader();
 
       reader.addEventListener('load', () => {
@@ -19,12 +19,12 @@ const uploadImages = (fileChooser, preview) => {
   });
 };
 
-const inputAvatar = document.querySelector('.ad-form__field input[type = file]');
-const previewAvatar = document.querySelector('.ad-form-header__preview img');
+const inputAvatarElement = document.querySelector('.ad-form__field input[type = file]');
+const previewAvatarElement = document.querySelector('.ad-form-header__preview img');
 
-uploadImages(inputAvatar, previewAvatar);
+uploadImages(inputAvatarElement, previewAvatarElement);
 
-const inputPhoto = document.querySelector('.ad-form__upload input[type = file]');
-const previewPhoto = document.querySelector('.ad-form__photo img');
+const inputPhotoElement = document.querySelector('.ad-form__upload input[type = file]');
+const previewPhotoElement = document.querySelector('.ad-form__photo img');
 
-uploadImages(inputPhoto, previewPhoto);
+uploadImages(inputPhotoElement, previewPhotoElement);
