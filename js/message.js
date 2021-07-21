@@ -11,7 +11,7 @@ const errorButton = document.querySelector('#error')
 let message = null;
 let closeMessage = {};
 
-const onclick = () => {
+const onClick = () => {
   closeMessage();
 };
 
@@ -25,7 +25,7 @@ const onEscKeydown = (evt) => {
 closeMessage = () => {
   bodyElement.removeChild(message);
   document.removeEventListener('keydown', onEscKeydown);
-  document.removeEventListener('click', onclick);
+  document.removeEventListener('click', onClick);
 };
 
 const sendMessage = (messageStatus) => {
@@ -33,8 +33,8 @@ const sendMessage = (messageStatus) => {
   bodyElement.appendChild(message);
 
   document.addEventListener('keydown', onEscKeydown);
-  document.addEventListener('click', onclick);
-  errorButton.addEventListener('click', onclick);
+  document.addEventListener('click', onClick);
+  errorButton.addEventListener('click', onClick);
 };
 
 export {sendMessage};
