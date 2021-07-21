@@ -1,29 +1,46 @@
-import {setCoordinates} from './form.js';
+import {setCoordinates, enableForms} from './form.js';
 import {showCard} from './card.js';
 import {getInitialCoordinates} from './data.js';
-import {getAdsArray, pageActivate} from './main.js';
 import {debounce} from './debounce.js';
 import {disableFormElement} from './utils.js';
+import {getData} from './api.js';
 
 const ADS_COUNT = 10;
 const LOWER_PRICE_LIMIT = 10000;
 const UPPER_PRICE_LIMIT = 50000;
 
-// Установка начального состояния карты
+let data = [];
+
+// Функция выключения элементов формы с фильтрами
+
+const mapFiltersElement = document.querySelector('.map__filters');
+
+const disableMapFilters = () => {
+  mapFiltersElement.classList.add('map__filters--disabled');
+  disableFormElement('input', mapFiltersElement);
+  disableFormElement('select', mapFiltersElement);
+};
+
+disableMapFilters();
+
+// Функция включения элементов формы с фильтрами
+
+const enableMapFilters = () => {
+  mapFiltersElement.classList.remove('map__filters--disabled');
+  const disabledMapFiltersList = mapFiltersElement.querySelectorAll('[disabled]');
+  for (const disabledMapFilter of disabledMapFiltersList) {
+    disabledMapFilter.removeAttribute('disabled');
+  }
+};
+
+// Инициализация карты
 
 const map = L.map('map-canvas');
 
-map.on('load', () => {
-  pageActivate();
-  setCoordinates(getInitialCoordinates);
-});
-
-// const makeInitialization = (callback) => {
-//   map.on('load', () => {
-//     callback();
-//     setCoordinates(getInitialCoordinates);
-//   });
-// };
+map.setView({
+  lat: getInitialCoordinates().lat,
+  lng: getInitialCoordinates().lng,
+}, 10);
 
 const mainPinIcon = L.icon({
   iconUrl: '../img/main-pin.svg',
@@ -66,25 +83,7 @@ const resetMap = () => {
   }, 10);
 
   mainPinMarker.setLatLng([getInitialCoordinates().lat, getInitialCoordinates().lng]).update();
-};
-
-resetMap();
-
-// Функция выключения элементов формы с фильтрами
-const mapFiltersElement = document.querySelector('.map__filters');
-
-const disableMapFilters = () => {
-  disableFormElement('input', mapFiltersElement);
-  disableFormElement('select', mapFiltersElement);
-};
-
-// Функция включения элементов формы с фильтрами
-
-const enableMapFilters = () => {
-  const disabledMapFiltersList = mapFiltersElement.querySelectorAll('[disabled]');
-  for (const disabledMapFilter of disabledMapFiltersList) {
-    disabledMapFilter.removeAttribute('disabled');
-  }
+  map.closePopup();
 };
 
 // Фильтрация меток объявлений на карте
@@ -139,9 +138,9 @@ const checkAllFilters = (adsListElement) => (checkbyType(adsListElement) && chec
 // Вывод маркеров объявлений на основе данных сгенерированного массива объявлений
 
 const markers = L.layerGroup();
-const setAdsToMap = (adsList) => {
-  adsList
-    .slice()
+
+const setAdsToMap = () => {
+  data
     .filter(checkAllFilters)
     .slice(0, ADS_COUNT)
     .forEach((adsListElement) => {
@@ -173,9 +172,23 @@ const setAdsToMap = (adsList) => {
     });
 };
 
+// Включение форм и получение данных после инициализации
+
+const makeInitialization = () => {
+  map.whenReady(() => {
+    enableForms();
+    enableMapFilters();
+
+    getData((adsList) => {
+      data = adsList;
+      setAdsToMap();
+    });
+  });
+};
+
 mapFiltersElement.addEventListener('change', debounce(() => {
   markers.clearLayers();
-  setAdsToMap(getAdsArray());
+  setAdsToMap();
 }));
 
-export {setAdsToMap, resetMap, disableMapFilters, enableMapFilters};
+export {setAdsToMap, resetMap, disableMapFilters, enableMapFilters, makeInitialization};

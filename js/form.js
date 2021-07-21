@@ -2,7 +2,7 @@
 import {disableFormElement} from './utils.js';
 import {getInitialCoordinates} from './data.js';
 import {sendMessage} from './message.js';
-import {resetMap} from './map.js';
+import {resetMap, makeInitialization} from './map.js';
 import {sendData} from './api.js';
 
 const TITLE_MIN_LENGTH = 30;
@@ -38,6 +38,8 @@ const enableForms = () => {
   }
 };
 
+makeInitialization(enableForms);
+
 // Вспомогательная функция для записи координат по движению главной метки
 
 const addressInputElement = document.querySelector('#address');
@@ -48,8 +50,6 @@ const setCoordinates = (coordinates) => {
 };
 
 setCoordinates(getInitialCoordinates);
-
-// makeInitialization(enableForms);
 
 // Валидация поля ввода заголовка объявления
 
