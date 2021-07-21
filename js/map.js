@@ -1,8 +1,9 @@
 import {setCoordinates} from './form.js';
 import {showCard} from './card.js';
 import {getInitialCoordinates} from './data.js';
-import {getAdsArray} from './main.js';
+import {getAdsArray, pageActivate} from './main.js';
 import {debounce} from './debounce.js';
+import {disableFormElement} from './utils.js';
 
 const ADS_COUNT = 10;
 const LOWER_PRICE_LIMIT = 10000;
@@ -12,12 +13,17 @@ const UPPER_PRICE_LIMIT = 50000;
 
 const map = L.map('map-canvas');
 
-const makeInitialization = (callback) => {
-  map.on('load', () => {
-    callback();
-    setCoordinates(getInitialCoordinates);
-  });
-};
+map.on('load', () => {
+  pageActivate();
+  setCoordinates(getInitialCoordinates);
+});
+
+// const makeInitialization = (callback) => {
+//   map.on('load', () => {
+//     callback();
+//     setCoordinates(getInitialCoordinates);
+//   });
+// };
 
 const mainPinIcon = L.icon({
   iconUrl: '../img/main-pin.svg',
@@ -64,11 +70,8 @@ const resetMap = () => {
 
 resetMap();
 
-import {disableFormElement} from './utils.js';
-
-const mapFiltersElement = document.querySelector('.map__filters');
-
 // Функция выключения элементов формы с фильтрами
+const mapFiltersElement = document.querySelector('.map__filters');
 
 const disableMapFilters = () => {
   disableFormElement('input', mapFiltersElement);
@@ -175,4 +178,4 @@ mapFiltersElement.addEventListener('change', debounce(() => {
   setAdsToMap(getAdsArray());
 }));
 
-export {setAdsToMap, resetMap, disableMapFilters, enableMapFilters, makeInitialization};
+export {setAdsToMap, resetMap, disableMapFilters, enableMapFilters};

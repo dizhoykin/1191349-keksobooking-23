@@ -1,18 +1,25 @@
-import './form.js';
+import {enableForms} from './form.js';
 import './images.js';
 import {getData} from './api.js';
-import {setAdsToMap, disableMapFilters, enableMapFilters} from './map.js';
-
-disableMapFilters();
+import {setAdsToMap, enableMapFilters} from './map.js';
 
 let data = [];
 
-getData((adsList) => {
-  data = adsList;
+const pageActivate = () => {
+  getData((adsList) => {
+    data = adsList;
+    setAdsToMap(adsList);
+  });
   enableMapFilters();
-  setAdsToMap(adsList);
-});
+  enableForms();
+};
+
+// getData((adsList) => {
+//   data = adsList;
+//   enableMapFilters();
+//   setAdsToMap(adsList);
+// });
 
 const getAdsArray = () => data;
 
-export {getAdsArray};
+export {getAdsArray, pageActivate};

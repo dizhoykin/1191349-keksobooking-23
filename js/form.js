@@ -2,7 +2,7 @@
 import {disableFormElement} from './utils.js';
 import {getInitialCoordinates} from './data.js';
 import {sendMessage} from './message.js';
-import {resetMap, makeInitialization} from './map.js';
+import {resetMap} from './map.js';
 import {sendData} from './api.js';
 
 const TITLE_MIN_LENGTH = 30;
@@ -49,7 +49,7 @@ const setCoordinates = (coordinates) => {
 
 setCoordinates(getInitialCoordinates);
 
-makeInitialization(enableForms());
+// makeInitialization(enableForms);
 
 // Валидация поля ввода заголовка объявления
 
@@ -133,8 +133,10 @@ const validateRoomsAndGuests = () => {
   const typeNumberCapacityValue = Number(capacityInputElement.value);
 
   if ((typeNumberRoomValue === 1 && typeNumberCapacityValue !== 1) ||
-    (typeNumberRoomValue === 2 && ((typeNumberCapacityValue !== 1) || (typeNumberCapacityValue !== 2))) ||
-    (typeNumberRoomValue === 100 || typeNumberCapacityValue === 0)) {
+    (typeNumberRoomValue === 2 && typeNumberCapacityValue === 3) ||
+    (typeNumberRoomValue === 2 && typeNumberCapacityValue === 0) ||
+    (typeNumberRoomValue === 3 && typeNumberCapacityValue === 0) ||
+    (typeNumberRoomValue === 100 && typeNumberCapacityValue !== 0)) {
     roomNumberInputElement.setCustomValidity('Выбрано ошибочное число комнат или гостей');
     return false;
   }
