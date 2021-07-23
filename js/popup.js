@@ -9,7 +9,7 @@ const adsListElementTemplate =  document.querySelector('#card')
   .querySelector('.popup');
 
 
-const showCard = (adsObject) => {
+const showPopup = (adsObject) => {
   const adsListElement = adsListElementTemplate.cloneNode(true);
 
   addOfferFeatureValue(adsListElement, '.popup__title', adsObject.offer.title);
@@ -29,12 +29,12 @@ const showCard = (adsObject) => {
   const featuresList = adsListElement.querySelector('.popup__features');
   featuresList.innerHTML = '';
   if (adsObject.offer.features) {
-    for (const feature of adsObject.offer.features) {
+    adsObject.offer.features.forEach((featureElement) => {
       const featuresListItem = document.createElement('li');
-      const featureClass = `popup__feature--${feature}`;
+      const featureClass = `popup__feature--${featureElement}`;
       featuresListItem.classList.add('popup__feature', featureClass);
       featuresList.appendChild(featuresListItem);
-    }
+    });
   }
   else {
     featuresList.classList.add('hidden');
@@ -44,11 +44,11 @@ const showCard = (adsObject) => {
   let photoListElementTemplate = photoList.querySelector('.popup__photo');
   photoList.innerHTML = '';
   if (adsObject.offer.photos) {
-    for (let index = 0; index < adsObject.offer.photos.length; index++) {
+    adsObject.offer.photos.forEach((photoElement) => {
       photoListElementTemplate = photoListElementTemplate.cloneNode(true);
-      photoListElementTemplate.src = adsObject.offer.photos[index];
+      photoListElementTemplate.src = photoElement;
       photoList.appendChild(photoListElementTemplate);
-    }
+    });
   }
   else {
     photoList.classList.add('hidden');
@@ -64,4 +64,4 @@ const showCard = (adsObject) => {
   return adsListElement;
 };
 
-export {showCard};
+export {showPopup};

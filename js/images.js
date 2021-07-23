@@ -21,10 +21,20 @@ const uploadImages = (fileChooser, preview) => {
 
 const inputAvatarElement = document.querySelector('.ad-form__field input[type = file]');
 const previewAvatarElement = document.querySelector('.ad-form-header__preview img');
-
-uploadImages(inputAvatarElement, previewAvatarElement);
+const initialPreviewSrc = previewAvatarElement.src;
 
 const inputPhotoElement = document.querySelector('.ad-form__upload input[type = file]');
 const previewPhotoElement = document.querySelector('.ad-form__photo img');
+const initialPhotoSrc = previewAvatarElement.src;
 
-uploadImages(inputPhotoElement, previewPhotoElement);
+const initUploadImages = () => {
+  uploadImages(inputAvatarElement, previewAvatarElement);
+  uploadImages(inputPhotoElement, previewPhotoElement);
+};
+
+const resetImages = () => {
+  previewAvatarElement.src = initialPreviewSrc;
+  previewPhotoElement.src = initialPhotoSrc;
+};
+
+export {resetImages, initUploadImages};

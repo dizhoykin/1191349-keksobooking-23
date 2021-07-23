@@ -1,5 +1,5 @@
 import {setCoordinates, enableForms} from './form.js';
-import {showCard} from './card.js';
+import {showPopup} from './popup.js';
 import {getInitialCoordinates} from './data.js';
 import {debounce} from './debounce.js';
 import {disableFormElement} from './utils.js';
@@ -93,18 +93,18 @@ const roomsElement = mapFiltersElement.querySelector('#housing-rooms');
 const guestsElement = mapFiltersElement.querySelector('#housing-guests');
 const priceElement = mapFiltersElement.querySelector('#housing-price');
 
-const checkbyType = (adObject) => (typeElement.value === 'any') ? true : (adObject.offer.type === typeElement.value);
-const checkbyRooms = (adObject) => (roomsElement.value === 'any') ? true : (adObject.offer.rooms === Number(roomsElement.value));
-const checkbyGuests = (adObject) => (guestsElement.value === 'any') ? true : (adObject.offer.guests <= Number(guestsElement.value));
+const checkByType = (adObject) => (typeElement.value === 'any') ? true : (adObject.offer.type === typeElement.value);
+const checkByRooms = (adObject) => (roomsElement.value === 'any') ? true : (adObject.offer.rooms === Number(roomsElement.value));
+const checkByGuests = (adObject) => (guestsElement.value === 'any') ? true : (adObject.offer.guests <= Number(guestsElement.value));
 
-const checkbyPrice = (adObject) => {
+const checkByPrice = (adObject) => {
   if (priceElement.value === 'any') {
     return true;
   }
-  else if (priceElement.value === 'low') {
+  if (priceElement.value === 'low') {
     return adObject.offer.price < LOWER_PRICE_LIMIT;
   }
-  else if (priceElement.value === 'high') {
+  if (priceElement.value === 'high') {
     return adObject.offer.price > UPPER_PRICE_LIMIT;
   }
   return (adObject.offer.price > LOWER_PRICE_LIMIT) && (adObject.offer.price < UPPER_PRICE_LIMIT);
@@ -132,8 +132,8 @@ const checkByFeatures = (adObject) => {
   return (checkByWifi(adObject) && checkByDishwasher(adObject) && checkByParking(adObject) && checkByWasher(adObject) && checkByElevator(adObject) && checkByConditioner(adObject));
 };
 
-const checkAllFilters = (adsListElement) => (checkbyType(adsListElement) && checkbyRooms(adsListElement) && checkbyGuests(adsListElement) &&
-    checkbyPrice(adsListElement) && checkByFeatures(adsListElement));
+const checkAllFilters = (adsListElement) => (checkByType(adsListElement) && checkByRooms(adsListElement) && checkByGuests(adsListElement) &&
+    checkByPrice(adsListElement) && checkByFeatures(adsListElement));
 
 // Вывод маркеров объявлений на основе данных сгенерированного массива объявлений
 
@@ -161,7 +161,7 @@ const setAdsToMap = () => {
       );
       marker
         .bindPopup(
-          showCard(adsListElement),
+          showPopup(adsListElement),
           {
             keepInView: true,
           },

@@ -4,6 +4,7 @@ import {getInitialCoordinates} from './data.js';
 import {sendMessage} from './message.js';
 import {resetMap, makeInitialization} from './map.js';
 import {sendData} from './api.js';
+import {resetImages} from './images.js';
 
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
@@ -14,6 +15,13 @@ const minPrice = {
   'hotel': 3000,
   'house': 5000,
   'palace': 10000,
+};
+
+const roomsCapacityRatio = {
+  '1': ['1'],
+  '2': ['1', '2'],
+  '3': ['1', '2', '3'],
+  '100': ['0'],
 };
 
 const adFormElement = document.querySelector('.ad-form');
@@ -34,7 +42,7 @@ const disabledElementList = adFormElement.querySelectorAll('[disabled]');
 const enableForms = () => {
   adFormElement.classList.remove('ad-form--disabled');
   for (const disabledElement of disabledElementList) {
-    disabledElement.removeAttribute('disabled');
+    disabledElement.disabled = false;
   }
 };
 
@@ -43,7 +51,7 @@ makeInitialization(enableForms);
 // Вспомогательная функция для записи координат по движению главной метки
 
 const addressInputElement = document.querySelector('#address');
-addressInputElement.setAttribute('readonly','');
+addressInputElement.readOnly = true;
 
 const setCoordinates = (coordinates) => {
   addressInputElement.value = `${  coordinates().lat.toFixed(5)  }, ${  coordinates().lng.toFixed(5)}`;
@@ -85,13 +93,15 @@ titleInputElement.addEventListener('input', () => {
 const typeInputElement = document.querySelector('#type');
 const priceInputElement = document.querySelector('#price');
 
+const priceInputInitialPlaceholderElement = priceInputElement.placeholder;
+
 typeInputElement.addEventListener('change', () => {
   priceInputElement.placeholder = minPrice[typeInputElement.value];
-  priceInputElement.setAttribute('min', minPrice[typeInputElement.value]);
+  priceInputElement.min = minPrice[typeInputElement.value];
 });
 
 priceInputElement.addEventListener('input', () => {
-  priceInputElement.setAttribute('min', minPrice[typeInputElement.value]);
+  priceInputElement.min = minPrice[typeInputElement.value];
 });
 
 // Валидация поля ввода цены
@@ -125,30 +135,20 @@ timeoutInputElement.addEventListener('change', () => {
 
 // Валидация полей ввода количества комнат и количества гостей
 
-const roomNumberInputElement = document.querySelector('#room_number');
+const roomsInputElement = document.querySelector('#room_number');
 const capacityInputElement = document.querySelector('#capacity');
+const capacityOptionsList = capacityInputElement.querySelectorAll('option');
 
 const validateRoomsAndGuests = () => {
-  const typeNumberRoomValue = Number(roomNumberInputElement.value);
-  const typeNumberCapacityValue = Number(capacityInputElement.value);
-
-  if ((typeNumberRoomValue === 1 && typeNumberCapacityValue !== 1) ||
-    (typeNumberRoomValue === 2 && typeNumberCapacityValue === 3) ||
-    (typeNumberRoomValue === 2 && typeNumberCapacityValue === 0) ||
-    (typeNumberRoomValue === 3 && typeNumberCapacityValue === 0) ||
-    (typeNumberRoomValue === 100 && typeNumberCapacityValue !== 0)) {
-    roomNumberInputElement.setCustomValidity('Выбрано ошибочное число комнат или гостей');
-    return false;
-  }
-  roomNumberInputElement.setCustomValidity('');
-  capacityInputElement.setCustomValidity('');
+  const roomsValue = roomsInputElement.value;
+  capacityOptionsList.forEach((capacityOptionsElement) => {
+    capacityOptionsElement.disabled = (roomsCapacityRatio[roomsValue].indexOf(capacityOptionsElement.value) === -1);
+  });
+  const enabledCapacityOptionsElement = capacityInputElement.querySelector('option:not([disabled])');
+  enabledCapacityOptionsElement.selected = true;
 };
 
-roomNumberInputElement.addEventListener('change', () => {
-  validateRoomsAndGuests();
-});
-
-capacityInputElement.addEventListener('change', () => {
+roomsInputElement.addEventListener('change', () => {
   validateRoomsAndGuests();
 });
 
@@ -166,20 +166,25 @@ const errorElement =  document.querySelector('#error')
 
 // Функция отправки данных формы на сервер
 
-adFormElement.addEventListener('submit', (evt) => {
-  evt.preventDefault();
+const sendFormData = () => {
+  adFormElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
 
-  sendData(
-    () => {
-      sendMessage(successElement);
-      resetMap();
-      adFormElement.reset();
-      setCoordinates(getInitialCoordinates);
-    },
-    () => sendMessage(errorElement),
-    new FormData(evt.target),
-  );
-});
+    sendData(
+      () => {
+        sendMessage(successElement);
+        resetMap();
+        adFormElement.reset();
+        resetImages();
+        setCoordinates(getInitialCoordinates);
+        priceInputElement.placeholder = priceInputInitialPlaceholderElement;
+        validateRoomsAndGuests();
+      },
+      () => sendMessage(errorElement),
+      new FormData(evt.target),
+    );
+  });
+};
 
 // Обрабочик кнопки cброса данных формы и карты
 
@@ -188,7 +193,9 @@ resetButton.addEventListener('click', (evt) => {
   evt.preventDefault();
   resetMap();
   adFormElement.reset();
+  resetImages();
   setCoordinates(getInitialCoordinates);
+  priceInputElement.placeholder = priceInputInitialPlaceholderElement;
 });
 
-export {enableForms, setCoordinates};
+export {enableForms, setCoordinates, sendFormData};
