@@ -29,7 +29,7 @@ const enableMapFilters = () => {
   mapFiltersElement.classList.remove('map__filters--disabled');
   const disabledMapFiltersList = mapFiltersElement.querySelectorAll('[disabled]');
   for (const disabledMapFilter of disabledMapFiltersList) {
-    disabledMapFilter.removeAttribute('disabled');
+    disabledMapFilter.disabled = false;
   }
 };
 
