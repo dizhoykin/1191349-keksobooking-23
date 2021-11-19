@@ -145,7 +145,7 @@ const setAdsToMap = () => {
     .slice(0, ADS_COUNT)
     .forEach((adsListElement) => {
       const icon = L.icon({
-        iconUrl: '../img/pin.jpg',
+        iconUrl: 'img/pin.svg',
         iconSize: [40, 40],
         iconAnchor: [20, 40],
       });
