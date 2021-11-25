@@ -1,8 +1,15 @@
 import {addOfferFeatureValue, changeWordForm} from './utils.js';
 
-const type = {'palace': 'Дворец', 'flat':'Квартира', 'house':'Дом', 'bungalow':'Бунгало', 'hotel':'Отель'};
-const roomWordForms = ['комната','комнаты','комнат'];
-const guestWordForms = ['гостя','гостей','гостей'];
+const Type = {
+  'palace': 'Дворец',
+  'flat': 'Квартира',
+  'house': 'Дом',
+  'bungalow': 'Бунгало',
+  'hotel': 'Отель',
+};
+
+const roomWordForms = ['комната', 'комнаты', 'комнат'];
+const guestWordForms = ['гостя', 'гостей', 'гостей'];
 
 const adsListElementTemplate =  document.querySelector('#card')
   .content
@@ -14,7 +21,7 @@ const showPopup = (adsObject) => {
 
   addOfferFeatureValue(adsListElement, '.popup__title', adsObject.offer.title);
   addOfferFeatureValue(adsListElement, '.popup__text--address', adsObject.offer.address);
-  addOfferFeatureValue(adsListElement, '.popup__type', type[adsObject.offer.type]);
+  addOfferFeatureValue(adsListElement, '.popup__type', Type[adsObject.offer.type]);
   addOfferFeatureValue(adsListElement, '.popup__description', adsObject.offer.description);
 
   addOfferFeatureValue(adsListElement, '.popup__text--price', adsObject.offer.price ?

@@ -9,7 +9,7 @@ import {resetImages} from './images.js';
 const TITLE_MIN_LENGTH = 30;
 const TITLE_MAX_LENGTH = 100;
 
-const minPrice = {
+const MinPrice = {
   'bungalow': 0,
   'flat': 1000,
   'hotel': 3000,
@@ -17,7 +17,7 @@ const minPrice = {
   'palace': 10000,
 };
 
-const roomsCapacityRatio = {
+const RoomsCapacityRatio = {
   '1': ['1'],
   '2': ['1', '2'],
   '3': ['1', '2', '3'],
@@ -96,12 +96,12 @@ const priceInputElement = document.querySelector('#price');
 const priceInputInitialPlaceholderElement = priceInputElement.placeholder;
 
 typeInputElement.addEventListener('change', () => {
-  priceInputElement.placeholder = minPrice[typeInputElement.value];
-  priceInputElement.min = minPrice[typeInputElement.value];
+  priceInputElement.placeholder = MinPrice[typeInputElement.value];
+  priceInputElement.min = MinPrice[typeInputElement.value];
 });
 
 priceInputElement.addEventListener('input', () => {
-  priceInputElement.min = minPrice[typeInputElement.value];
+  priceInputElement.min = MinPrice[typeInputElement.value];
 });
 
 // Валидация поля ввода цены
@@ -142,7 +142,7 @@ const capacityOptionsList = capacityInputElement.querySelectorAll('option');
 const validateRoomsAndGuests = () => {
   const roomsValue = roomsInputElement.value;
   capacityOptionsList.forEach((capacityOptionsElement) => {
-    capacityOptionsElement.disabled = (roomsCapacityRatio[roomsValue].indexOf(capacityOptionsElement.value) === -1);
+    capacityOptionsElement.disabled = (RoomsCapacityRatio[roomsValue].indexOf(capacityOptionsElement.value) === -1);
   });
   const enabledCapacityOptionsElement = capacityInputElement.querySelector('option:not([disabled])');
   enabledCapacityOptionsElement.selected = true;
